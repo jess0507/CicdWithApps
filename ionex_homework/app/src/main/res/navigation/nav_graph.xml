@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_login">
+
+    <fragment
+        android:id="@+id/fragment_login"
+        android:label="@string/app_name"
+        android:name="com.example.ionex_homework.ui.login.LoginFragment">
+        <action
+            android:id="@+id/action_fragment_login_to_fragment_park_list"
+            app:destination="@id/fragment_park_list" />
+    </fragment>
+
+    <fragment android:id="@+id/fragment_park_list"
+        android:label="ParkList"
+        android:name="com.example.ionex_homework.ui.park.ParkListFragment">
+        <action
+            android:id="@+id/action_fragment_park_list_to_fragment_timezone"
+            app:destination="@id/fragment_timezone" />
+    </fragment>
+
+    <fragment android:id="@+id/fragment_timezone"
+        android:label="Timezone"
+        android:name="com.example.ionex_homework.ui.timezone.TimezoneFragment">
+    </fragment>
+</navigation>

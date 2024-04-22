@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">ionex_homework</string>
+    <string name="form_default">id:\nname:\naddress:\ntotalcar:\n\n待機總數:\n充電中總數:</string>
+    <string name="form_id">id:</string>
+    <string name="form_name">name:</string>
+    <string name="form_address">address:</string>
+    <string name="form_total_car">totalcar:</string>
+    <string name="form_total_standby">待機總數:</string>
+    <string name="form_total_incharge">充電中總數:</string>
+    <string name="form_next_line">\n</string>
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+</resources>
