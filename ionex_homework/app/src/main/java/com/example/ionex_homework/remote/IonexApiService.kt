@@ -33,6 +33,19 @@ interface IonexApiService {
         private fun create(baseUrl: String): IonexApiService {
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor())
+                .addInterceptor(RetryInterceptor())
+                .addInterceptor { chain ->
+                    var request = chain.request()
+                    var response = chain.proceed(request)
+                    var tryCount = 0
+                    while (!response.isSuccessful && tryCount < 3) {
+                        tryCount++
+                        response.close()
+                        request = request.newBuilder().build()
+                        response = chain.proceed(request)
+                    }
+                    response
+                }
                 .build()
 
             return Retrofit.Builder()

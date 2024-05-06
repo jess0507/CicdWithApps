@@ -1,14 +1,14 @@
 package com.example.ionex_homework.ui.login
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ionex_homework.remote.DataRepository
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import com.example.ionex_homework.remote.Result
 import com.example.ionex_homework.remote.model.LoginResponse
+import kotlinx.coroutines.launch
 
 class LoginViewModel: ViewModel() {
     private val _email = MutableLiveData<String>()
@@ -26,6 +26,15 @@ class LoginViewModel: ViewModel() {
     }
     var loginResponse: MutableLiveData<LoginResponse?> =    MutableLiveData(null)
     var isLogin: MutableLiveData<Boolean> = MutableLiveData(false)
+    var isSkip: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoginOrSkip: MediatorLiveData<Boolean> = MediatorLiveData<Boolean>().apply {
+        addSource(isLogin) { login ->
+            value = login
+        }
+        addSource(isSkip) { skip ->
+            value = skip
+        }
+    }
     var showProgressBar = MutableLiveData(false)
     var errorMsg = MutableLiveData("")
 
@@ -51,5 +60,9 @@ class LoginViewModel: ViewModel() {
                 }
             }
         }
+    }
+
+    fun skip() {
+        isSkip.value = true
     }
 }

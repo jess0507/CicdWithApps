@@ -7,19 +7,19 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.ionex_homework.R
-import com.example.ionex_homework.remote.DataRepository
 import com.example.ionex_homework.ui.share.ShareViewModel
+import com.example.ionex_homework.util.SafeClickListener
+import com.example.ionex_homework.util.setOnSafeClickListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_login.email_edit_text
 import kotlinx.android.synthetic.main.fragment_login.login_button
 import kotlinx.android.synthetic.main.fragment_login.password_edit_text
+import kotlinx.android.synthetic.main.fragment_login.skip_button
 import timber.log.Timber
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
-    // Use the 'by viewModels()' Kotlin property delegate from the fragment-ktx artifact
     private val viewmodel: LoginViewModel by viewModels()
     private val shareViewModel: ShareViewModel by activityViewModels()
 
@@ -30,8 +30,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun prepareLayout() {
-        login_button.setOnClickListener {
+        login_button.setOnSafeClickListener {
             viewmodel.login()
+        }
+
+        skip_button.setOnSafeClickListener {
+            viewmodel.skip()
         }
 
         email_edit_text.addTextChangedListener(object : TextWatcher {
@@ -56,8 +60,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             Timber.d("loginResponse: $it")
             shareViewModel.loginResponse.value = it
         }
-        viewmodel.isLogin.observe(viewLifecycleOwner) {
-            Timber.d("isLogin: $it")
+        viewmodel.isLoginOrSkip.observe(viewLifecycleOwner) {
+            Timber.d("isLoginOrSkip: $it")
             if (!it) return@observe
             findNavController().navigate(R.id.action_fragment_login_to_fragment_park_list)
         }

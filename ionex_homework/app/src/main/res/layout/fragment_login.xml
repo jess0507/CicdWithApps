@@ -48,11 +48,20 @@
 
         <Button
             android:id="@+id/login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fc7b03"
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:background="@color/loginButton"
             android:textAllCaps="true"
+            android:layout_marginBottom="20dp"
             android:text="Log in"/>
+
+        <Button
+            android:id="@+id/skip_button"
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:background="@color/skipButton"
+            android:textAllCaps="true"
+            android:text="Skip"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

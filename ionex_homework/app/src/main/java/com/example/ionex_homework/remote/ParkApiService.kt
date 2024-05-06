@@ -17,8 +17,9 @@ interface ParkApiService {
         private fun create(baseUrl: String): ParkApiService {
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
+                    level = HttpLoggingInterceptor.Level.HEADERS
                 })
+                .addInterceptor(RetryInterceptor())
                 .build()
 
             return Retrofit.Builder()
