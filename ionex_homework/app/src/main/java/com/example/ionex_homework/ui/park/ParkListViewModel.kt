@@ -4,10 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ionex_homework.remote.DataRepository
+import com.example.ionex_homework.remote.Result
 import com.example.ionex_homework.remote.model.Park
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import com.example.ionex_homework.remote.Result
 
 class ParkListViewModel: ViewModel() {
     val parkList: MutableLiveData<List<Park>> = MutableLiveData(listOf())

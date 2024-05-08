@@ -8,11 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.ionex_homework.BuildConfig
 import com.example.ionex_homework.R
 import com.example.ionex_homework.ui.share.ShareViewModel
-import com.example.ionex_homework.util.SafeClickListener
 import com.example.ionex_homework.util.setOnSafeClickListener
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.progressBar
 import kotlinx.android.synthetic.main.fragment_login.email_edit_text
 import kotlinx.android.synthetic.main.fragment_login.login_button
 import kotlinx.android.synthetic.main.fragment_login.password_edit_text
@@ -24,6 +24,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private val shareViewModel: ShareViewModel by activityViewModels()
 
     override fun onStart() {
+        Timber.d("onStart")
         super.onStart()
         prepareLayout()
         prepareObservers()
@@ -33,9 +34,13 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         login_button.setOnSafeClickListener {
             viewmodel.login()
         }
-
-        skip_button.setOnSafeClickListener {
-            viewmodel.skip()
+        if (BuildConfig.DEBUG) {
+            skip_button.visibility = View.VISIBLE
+            skip_button.setOnSafeClickListener {
+                viewmodel.trySkip()
+            }
+        } else {
+            skip_button.visibility = View.INVISIBLE
         }
 
         email_edit_text.addTextChangedListener(object : TextWatcher {
@@ -63,6 +68,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         viewmodel.isLoginOrSkip.observe(viewLifecycleOwner) {
             Timber.d("isLoginOrSkip: $it")
             if (!it) return@observe
+            viewmodel.afterLogin()
             findNavController().navigate(R.id.action_fragment_login_to_fragment_park_list)
         }
         viewmodel.errorMsg.observe(viewLifecycleOwner) {
@@ -75,5 +81,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             if (it) requireActivity().progressBar.visibility = View.VISIBLE
             else requireActivity().progressBar.visibility = View.INVISIBLE
         }
+    }
+
+    override fun onDestroy() {
+        Timber.d("onDestroy")
+        super.onDestroy()
     }
 }

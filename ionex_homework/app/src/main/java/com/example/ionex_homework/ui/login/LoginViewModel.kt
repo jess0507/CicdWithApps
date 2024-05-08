@@ -62,7 +62,11 @@ class LoginViewModel: ViewModel() {
         }
     }
 
-    fun skip() {
+    fun trySkip() {
         isSkip.value = true
+    }
+
+    fun afterLogin() {
+        isSkip.value = false
     }
 }
