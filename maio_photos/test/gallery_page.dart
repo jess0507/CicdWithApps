@@ -99,9 +99,6 @@ void testGalleryPageContent() {
   testWidgets('Test Gallery Page Content', (WidgetTester tester) async {
     // 創建一個假的 ViewModel 以提供照片
     final viewModel = GalleryPageViewmodel.empty();
-    List<Photo> list =
-        jsonDecode(testData).map<Photo>((json) => Photo.fromMap(json)).toList();
-    viewModel.update(list: list);
 
     // 用假的 ViewModel 包裝 GalleryPage
     await tester.pumpWidget(
@@ -118,6 +115,17 @@ void testGalleryPageContent() {
 
     // 檢查 AppBar 的文字是否正確顯示
     expect(find.text(LokaliseKey.galleryPage), findsOneWidget);
+
+    print("test photos' length: ${viewModel.state.photos.length}");
+    // 檢查 GridView 是否正確顯示照片
+    expect(
+        find.byType(PhotoItem), findsNWidgets(viewModel.state.photos.length));
+
+    List<Photo> list =
+        jsonDecode(testData).map<Photo>((json) => Photo.fromMap(json)).toList();
+    viewModel.update(list: list);
+    // 重新構建 Widget 樹以反映最新的 viewmodel
+    await tester.pump();
 
     print("test photos' length: ${viewModel.state.photos.length}");
     // 檢查 GridView 是否正確顯示照片
