@@ -1,9 +1,7 @@
 import 'package:maio_photos/pages/first/navigation_button.dart';
 import 'package:maio_photos/pages/gallery/gallery_page.dart';
-import 'package:maio_photos/pages/gallery/gallery_page_view_model.dart';
-import 'package:maio_photos/util/constants.dart';
+import 'package:maio_photos/util/lokalise_key.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class FirstPage extends StatelessWidget {
   const FirstPage({super.key});
@@ -12,27 +10,24 @@ class FirstPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(Constants.firstPageTitle),
+        title: const Text(LokaliseKey.firstPage),
         centerTitle: true,
       ),
       body: Column(
         children: [
           NavigationButton(
-              title: 'Go to gallery.',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) {
-                    return ProviderScope(
-                      overrides: [
-                        galleryPageViewmodel
-                            .overrideWith((ref) => GalleryPageViewmodel())
-                      ],
-                      child: const GalleryPage(),
-                    );
-                  }),
-                );
-              })
+            title: LokaliseKey.navigateGallery,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const GalleryPage();
+                  },
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

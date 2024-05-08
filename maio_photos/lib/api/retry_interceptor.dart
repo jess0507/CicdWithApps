@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
+import 'package:maio_photos/api/http_config.dart';
 import 'package:maio_photos/api/request_option_extension.dart';
-
-import '../util/constants.dart';
 
 class RetryInterceptor extends Interceptor {
   final Dio dio;
@@ -13,8 +12,8 @@ class RetryInterceptor extends Interceptor {
 
   RetryInterceptor({
     required this.dio,
-    this.retryCount = Constants.httpRequestRetryCount,
-    this.delay = Constants.httpRequestDelay,
+    this.retryCount = HttpConfig.retryCount,
+    this.delay = HttpConfig.delay,
   });
 
   @override

@@ -1,7 +1,6 @@
 class RequestOptionExtraKeys {
   static const String cacheControl = 'cacheControl';
   static const String requestAt = 'requestAt';
-
   static const String retryTimeout = 'retryTimeout';
   static const String retryAttempt = 'retryAttempt';
   static const String retryEnable = 'retryEnable';

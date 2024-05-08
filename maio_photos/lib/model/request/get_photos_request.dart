@@ -11,10 +11,8 @@ class GetPhotosRequest extends Request<List<Photo>> {
 
   @override
   List<Photo> deserialize(Response response) {
-    List<Photo> list = [];
-    for (final json in response.data) {
-      list.add(Photo.fromMap(json));
-    }
+    List<Photo> list =
+        response.data.map((json) => Photo.fromMap(json)).toList();
     return list;
   }
 }

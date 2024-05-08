@@ -4,8 +4,8 @@ import 'package:maio_photos/model/db/entity/photo.dart';
 import 'package:maio_photos/model/request/get_photos_request.dart';
 import 'package:maio_photos/model/response/http_response.dart';
 
-void testGetPhotosRequest() {
-  test('- Get photos.', () async {
+void testPhotoRetrieval() {
+  test('Test Photo Retrieval', () async {
     // Action
     HttpResponse? response;
     try {

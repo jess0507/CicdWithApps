@@ -9,12 +9,14 @@ import 'package:rxdart/utils.dart';
 
 import 'gallery_page_view_model_state.dart';
 
-final galleryPageViewmodel =
-    StateNotifierProvider<GalleryPageViewmodel, GalleryPageViewModelState>(
-        (ref) => throw UnimplementedError());
+final galleryPageViewmodel = StateNotifierProvider.autoDispose<
+    GalleryPageViewmodel,
+    GalleryPageViewModelState>((ref) => GalleryPageViewmodel());
 
 class GalleryPageViewmodel extends StateNotifier<GalleryPageViewModelState> {
   final CompositeSubscription _subscription = CompositeSubscription();
+
+  GalleryPageViewmodel.empty() : super(GalleryPageViewModelState.empty());
 
   GalleryPageViewmodel() : super(GalleryPageViewModelState.empty()) {
     initPhotos();

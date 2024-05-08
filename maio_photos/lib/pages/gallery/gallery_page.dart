@@ -1,6 +1,6 @@
 import 'package:maio_photos/pages/gallery/gallery_page_view_model.dart';
 import 'package:maio_photos/pages/gallery/photo_item.dart';
-import 'package:maio_photos/util/constants.dart';
+import 'package:maio_photos/util/lokalise_key.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -13,7 +13,7 @@ class GalleryPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(Constants.firstPageTitle),
+        title: const Text(LokaliseKey.galleryPage),
         centerTitle: true,
       ),
       body: photos.isEmpty
