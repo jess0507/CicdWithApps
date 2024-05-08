@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:playsee_story/model/entity/post.dart';
 import 'package:playsee_story/model/entity/post_response.dart';
 import 'package:playsee_story/model/request/get_post_request.dart';
 import 'package:fimber/fimber.dart';
