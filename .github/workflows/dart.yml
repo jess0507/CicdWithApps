@@ -46,6 +46,6 @@ jobs:
         run: cd maio_photos && flutter test
       
       # Build Android Bundle release file
-      - name: Build aab
+      - name: Build apk
         run: |
           cd maio_photos && flutter build apk
