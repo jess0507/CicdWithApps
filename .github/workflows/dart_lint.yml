@@ -7,13 +7,19 @@ name: Dart lint
 on: pull_request
 
 env:
-  project_name: ${{ github.ref }}.split('/')[1]
+  project_name: ${{ github.head_ref }}.split('/')[0]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:      
+    steps:   
+      - name: project name
+        run: echo ${{ env.project_name }}
+
+      - name: Install dependencies
+        run: cd ${{ env.project_name }} && flutter pub get  
+         
       - uses: actions/checkout@v4
 
       - uses: actions/setup-java@v1
