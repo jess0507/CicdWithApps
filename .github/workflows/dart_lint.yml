@@ -28,10 +28,8 @@ jobs:
             project=${{ github.head_ref }}
             array=${{ env.apps }}
             for item in ${array[*]}
-            echo '$item' 
-            echo "$project" == *"$item"*
             do
-              if [[ "$project" == *"$item"* ]]; then
+              if [[ "$project" == "$item" ]]; then
                 echo 'app=$item' >> "$GITHUB_OUTPUT"
                 echo 'find project' 
                 echo '$item' 
