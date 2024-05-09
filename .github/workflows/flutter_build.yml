@@ -7,6 +7,8 @@ name: Build flutter app
 
 on:
   push:
+    tags:
+      - '*'
     branches: [ 
       "test/curriculum", 
       "release/curriculum",
@@ -82,8 +84,14 @@ jobs:
       - name: Run tests
         run: cd ${{ env.PROJECT_NAME }} && flutter test
           
-      # Build Android Bundle release file
-      - name: Build aab
+      # Build Android app apk
+      - name: Build debug apk
         run: |
           cd ${{ env.PROJECT_NAME }} && flutter build apk
     
+      - name: Releasing using Hub
+        uses: sangatdesai/release-apk@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          APP_FOLDER: app
+        

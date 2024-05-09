@@ -2,6 +2,8 @@ name: Generated APK
 
 on:
   push:
+    tags:
+      - '*'
     branches: [ 
       "test/ionex_homework", 
       "release/ionex_homework",
@@ -49,5 +51,12 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
     
-      - name: Build APK
+      - name: Build debug apk
         run: cd ${{ env.PROJECT_NAME }} && ./gradlew assembleDebug
+
+      - name: Releasing using Hub
+        uses: sangatdesai/release-apk@main
+        env:
+         GITHUB_TOKEN: ${{ secrets.TOKEN }}
+         APP_FOLDER: app
+      
