@@ -21,7 +21,7 @@ jobs:
         id: check_ref
         run: |
           IN="${{ github.head_ref }}"
-          paths=$(echo $IN | tr "/")
+          IFS='/' read -ra paths <<< "$IN"
           for path in $paths
           do
             echo "path, $path"
