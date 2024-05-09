@@ -50,4 +50,4 @@ jobs:
           java-version: '11'
     
       - name: Build APK
-        run: cd ${{ env.PROJECT_NAME }} && ./gradlew assembleRelease
+        run: cd ${{ env.PROJECT_NAME }} && ./gradlew assembleDebug
