@@ -6,9 +6,6 @@
 name: Dart lint
 on: pull_request
 
-env:
-  project_name: ${{ github.head_ref }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
