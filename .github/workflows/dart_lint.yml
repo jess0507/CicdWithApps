@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v3
       - id: step1
         run: |
-          if startsWith(${{github.head_ref}}, '${{ matrix.project_name }}/') ; then
+          if startsWith(${{github.head_ref}}, ${{ matrix.project_name }}) ; then
             echo 'app=${{ matrix.project_name }}' >> "$GITHUB_OUTPUT"
           fi
 
