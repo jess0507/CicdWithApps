@@ -20,10 +20,13 @@ jobs:
         app: ${{ steps.step1.outputs.app}}
     steps:
       - uses: actions/checkout@v3
+      - name: Set project name
+        id: set_project_name
+        run: echo "::set-output name=project_name::${{ matrix.project_name }}"
       - id: step1
         run: |
-          if startsWith(github.head_ref, '${{ matrix.project_name }}/') ; then
-            echo 'app=${{ matrix.project_name }}' >> "$GITHUB_OUTPUT"
+          if [[ $GITHUB_REF == "${{ steps.set_project_name.outputs.project_name }}/"* ]]; then
+            echo "app=${{ steps.set_project_name.outputs.project_name }}" >> "$GITHUB_OUTPUT"
           fi
 
   build:
