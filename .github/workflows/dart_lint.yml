@@ -7,7 +7,7 @@ name: Dart lint
 on: pull_request
 
 jobs:
-  check_head_ref:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,7 +18,7 @@ jobs:
           array=("curriculum" "currency_conversion" "maio_photos" "playsee_story")
 
       - name: Check if github.head_ref is in array
-        id: check_ref
+        id: build
         run: |
           IN="${{ github.head_ref }}"
           IFS='/' read -ra paths <<< "$IN"
@@ -27,9 +27,9 @@ jobs:
             echo "path, $path"
             for item in "${array[@]}"; do
               echo "item, $item"
-              if [[ "${{ github.head_ref }}" == *"$item"* ]]; then
-                echo "::set-output name=matched_value::$item"
-                break
+              if [[ "$path" == *"$item"* ]]; then
+                echo "::set-output name=project_name::$item"
+                break 2
               fi
             done
           done
@@ -37,8 +37,8 @@ jobs:
 
       - name: Use matched value
         run: |
-          project_name=${{ steps.check_ref.outputs.matched_value }}
-          echo "Project name is: $matched_value"
+          project_name=${{ steps.build.outputs.project_name }}
+          echo "Project name is: $project_name"
       
       - uses: actions/checkout@v4
 
@@ -52,10 +52,10 @@ jobs:
           flutter-version: 3.19.0
 
       - name: Install dependencies
-        run: cd ${{ steps.check_ref.outputs.matched_value }} && flutter pub get
+        run: cd ${{ steps.build.outputs.project_name }} && flutter pub get
 
       - name: Generate files
-        run: cd ${{ steps.check_ref.outputs.matched_value}} && flutter pub run build_runner build --delete-conflicting-outputs
+        run: cd ${{ steps.build.outputs.project_name}} && flutter pub run build_runner build --delete-conflicting-outputs
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
@@ -63,11 +63,11 @@ jobs:
 
       # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
-        run: cd ${{ steps.check_ref.outputs.matched_value}} && flutter analyze
+        run: cd ${{ steps.build.outputs.project_name}} && flutter analyze
 
       # Your project will need to have tests in test/ and a dependency on
       # package:test for this step to succeed. Note that Flutter projects will
       # want to change this to 'flutter test'.
       - name: Run tests
-        run: cd ${{ steps.check_ref.outputs.matched_value }} && flutter test
+        run: cd ${{ steps.build.outputs.project_name }} && flutter test
       
