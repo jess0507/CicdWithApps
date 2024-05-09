@@ -9,29 +9,19 @@ on:
   push:
     branches: [ "test", "release" ]
 
-jobs:
-  affected-apps:
-    runs-on: ubuntu-latest
-    name: Try to choose a flutter app
-    strategy:
-      matrix:
-        project_name: [curriculum, currency_conversion, maio_photos, playsee_story, ]
-    outputs:
-        app: ${{ steps.step1.outputs.app}}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set project name
-        id: set_project_name
-        run: echo "::set-output name=project_name::${{ matrix.project_name }}"
-      - id: step1
-        run: |
-          if [[ $GITHUB_REF == "${{ steps.set_project_name.outputs.project_name }}/"* ]]; then
-            echo "app=${{ steps.set_project_name.outputs.project_name }}" >> "$GITHUB_OUTPUT"
-          fi
+env:
+  project_name: ${{ github.head_ref }}
+  apps: |
+    [
+      "curriculum", 
+      "currency_conversion", 
+      "maio_photos", 
+      "playsee_story"
+    ]
 
+jobs:
   build:
-    needs: affected-apps
-    if: needs.affected-apps.outputs.app != ''
+    if: contains(env.apps, ${{ github.head_ref }})
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
