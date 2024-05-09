@@ -9,12 +9,12 @@ on: pull_request
 env:
   project_name: ${{ github.head_ref }}
   apps: |
-    [
+    (
       "curriculum", 
       "currency_conversion", 
       "maio_photos", 
       "playsee_story"
-    ]
+    )
 
 jobs:
   affected-apps:
@@ -26,12 +26,12 @@ jobs:
       - uses: actions/checkout@v3
       - id: step1
         run: |
-            theapp=${{ env.project_name }}
+            project=${{ env.project_name }}
             array=${{ env.apps }}
             for item in ${array[*]}
             do
-              if [[ "$item" == $theapp ]]; then
-                echo 'app=$theapp' >> "$GITHUB_OUTPUT"
+              if [[ "$item" == $project ]]; then
+                echo 'app=$project' >> "$GITHUB_OUTPUT"
               fi
             done
 
