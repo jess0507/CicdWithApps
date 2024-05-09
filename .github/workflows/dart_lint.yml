@@ -6,32 +6,14 @@
 name: Dart lint
 on: pull_request
 
+env:
+  project_name: ${{ github.ref }}.split('/')[1]
+
 jobs:
-  affected-apps:
-    runs-on: ubuntu-latest
-    name: Try to choose a flutter app
-    strategy:
-      matrix:
-        project_name: [curriculum, currency_conversion, maio_photos, playsee_story, ]
-    outputs:
-        app: ${{ steps.step1.outputs.app}}
-    steps:
-      - uses: actions/checkout@v3
-      - id: step1
-        run: |
-          if startsWith(github.head_ref, '${{ matrix.project_name }}/') ; then
-            echo 'app=${{ matrix.project_name }}' >> "$GITHUB_OUTPUT"
-          fi
-
   build:
-    needs: affected-apps
-    if: needs.affected-apps.outputs.app != ''
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        project_name: [curriculum, currency_conversion, maio_photos, playsee_story, ]
 
-    steps:
+    steps:      
       - uses: actions/checkout@v4
 
       - uses: actions/setup-java@v1
@@ -44,10 +26,10 @@ jobs:
           flutter-version: 3.19.0
 
       - name: Install dependencies
-        run: cd ${{ needs.affected-apps.outputs.app }} && flutter pub get
+        run: cd ${{ env.project_name }} && flutter pub get
 
       - name: Generate files
-        run: cd ${{ needs.affected-apps.outputs.app }} && flutter pub run build_runner build --delete-conflicting-outputs
+        run: cd ${{ env.project_name }} && flutter pub run build_runner build --delete-conflicting-outputs
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
@@ -55,15 +37,15 @@ jobs:
 
       # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
-        run: cd ${{ needs.affected-apps.outputs.app }} && flutter analyze
+        run: cd ${{ env.project_name }} && flutter analyze
 
       # Your project will need to have tests in test/ and a dependency on
       # package:test for this step to succeed. Note that Flutter projects will
       # want to change this to 'flutter test'.
       - name: Run tests
-        run: cd ${{ needs.affected-apps.outputs.app }} && flutter test
+        run: cd ${{ env.project_name }} && flutter test
       
       # Build Android Bundle release file
       - name: Build aab
         run: |
-          cd ${{ needs.affected-apps.outputs.app }} && flutter build apk
+          cd ${{ env.project_name }} && flutter build apk
