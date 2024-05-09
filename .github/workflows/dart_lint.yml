@@ -29,20 +29,18 @@ jobs:
             array=${{ env.apps }}
             for item in ${array[*]}
             do
-              if [[ "$project" == "$item" ]]; then
+              if [[ "$project" == *"$item"* ]]; then
                 echo 'app=$item' >> "$GITHUB_OUTPUT"
-                echo 'find project' 
-                echo '$item' 
               fi
             done
 
   build:
     needs: affected-apps
-    if: needs.affected-apps.outputs.app != ''
     runs-on: ubuntu-latest
     steps:
       - name: Project name
-        run: echo "${{ needs.affected-apps.outputs.app }}"
+        run: 
+          echo "${{ needs.affected-apps.outputs.app }}"
       
       - uses: actions/checkout@v4
 
