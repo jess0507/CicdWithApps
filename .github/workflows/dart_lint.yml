@@ -31,7 +31,7 @@ jobs:
             for item in ${array[*]}
             do
               if [[ "$item" == *"$project"* ]]; then
-                echo 'app=$project' >> "$GITHUB_OUTPUT"
+                echo 'app=$item' >> "$GITHUB_OUTPUT"
               fi
             done
 
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Project name
-        run: echo "${{ env.project_name }}"
+        run: echo "${{ needs.affected-apps.outputs.app }}"
       
       - uses: actions/checkout@v4
 
