@@ -29,7 +29,7 @@ jobs:
             for item in "${array[@]}"; do
               echo "item, $item"
               if [[ "$path" == "$item" ]]; then
-                echo "PROJECT_NAME=ionex_homework" >> $GITHUB_ENV
+                echo "PROJECT_NAME=$item" >> $GITHUB_ENV
                 break 2
               fi
             done
@@ -38,7 +38,7 @@ jobs:
 
       - name: Project name
         run: |
-          echo "Project name is: $project_name"
+          echo "Project name is: ${{ env.PROJECT_NAME }}"
       
       - uses: actions/checkout@v4
 
