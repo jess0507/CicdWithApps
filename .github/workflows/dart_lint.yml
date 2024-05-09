@@ -30,6 +30,7 @@ jobs:
                 echo "project_name=$item" >> $GITHUB_ENV
               fi
             done
+            echo "test=${{ github.head_ref }}" >> $GITHUB_ENV
 
   build:
     runs-on: ubuntu-latest
@@ -37,6 +38,7 @@ jobs:
       - name: Project name
         run: 
           echo "${{ env.project_name }}"
+          echo "${{ env.test }}"
       
       - uses: actions/checkout@v4
 
