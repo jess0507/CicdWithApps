@@ -30,8 +30,8 @@ jobs:
             array=${{ env.apps }}
             for item in ${array[*]}
             do
-              if [[ contains($item, $project) ]]; then
-                echo 'app=$item' >> "$GITHUB_OUTPUT"
+              if [[ "$item" == *"$project"* ]]; then
+                echo 'app=$project' >> "$GITHUB_OUTPUT"
               fi
             done
 
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Project name
-        run: echo "${{ needs.affected-apps.outputs.app }}"
+        run: echo "${{ env.project_name }}"
       
       - uses: actions/checkout@v4
 
@@ -55,10 +55,10 @@ jobs:
           flutter-version: 3.19.0
 
       - name: Install dependencies
-        run: cd ${{ needs.affected-apps.outputs.app }} && flutter pub get
+        run: cd ${{ env.project_name }} && flutter pub get
 
       - name: Generate files
-        run: cd ${{ needs.affected-apps.outputs.app }} && flutter pub run build_runner build --delete-conflicting-outputs
+        run: cd ${{ env.project_name }} && flutter pub run build_runner build --delete-conflicting-outputs
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
@@ -66,15 +66,15 @@ jobs:
 
       # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
-        run: cd ${{ needs.affected-apps.outputs.app }} && flutter analyze
+        run: cd ${{ env.project_name }} && flutter analyze
 
       # Your project will need to have tests in test/ and a dependency on
       # package:test for this step to succeed. Note that Flutter projects will
       # want to change this to 'flutter test'.
       - name: Run tests
-        run: cd ${{ needs.affected-apps.outputs.app }} && flutter test
+        run: cd ${{ env.project_name }} && flutter test
       
       # Build Android Bundle release file
       - name: Build aab
         run: |
-          cd ${{ needs.affected-apps.outputs.app }} && flutter build apk
+          cd ${{ env.project_name }} && flutter build apk
