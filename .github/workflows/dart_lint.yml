@@ -15,7 +15,7 @@ jobs:
 
     steps:   
       - name: Set up project name
-        run: echo "project_name=${{ env.project_name }}.split('/')[0]" >> $GITHUB_ENV
+        run: echo "project_name=${{ github.head_ref }} | cut -d '/' -f 1 " >> $GITHUB_ENV
 
       - name: Install dependencies
         run: cd ${{ env.project_name }} && flutter pub get  
