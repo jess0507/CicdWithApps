@@ -18,6 +18,9 @@ on:
       "release/playsee_story",
     ]
 
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,7 +32,7 @@ jobs:
         id: build
         run: |
           array=("curriculum" "currency_conversion" "maio_photos" "playsee_story")
-          IN="${{ github.head_ref }}"
+          IN="${{ env.BRANCH_NAME }}"
           IFS='/' read -ra paths <<< "$IN"
           for path in $paths
           do
