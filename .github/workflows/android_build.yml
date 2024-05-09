@@ -50,6 +50,9 @@ jobs:
           distribution: 'adopt'
           java-version: '11'
 
+
+      - name: Set execute permissions for Gradle Wrapper
+        run: chmod +x ./gradlew
+    
       - name: Build APK
-        run: |
-          cd ${{ steps.build.outputs.project_name }} && ./gradlew assembleDebug
+        run: ./gradlew assembleRelease
