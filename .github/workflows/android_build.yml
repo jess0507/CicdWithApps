@@ -1,4 +1,4 @@
-name: Generated APK AAB (Upload - Create Artifact To Github Action)
+name: Generated APK
 
 on:
   push:
@@ -49,4 +49,4 @@ jobs:
 
       - name: Build APK
         run: |
-          cd ${{ steps.build.outputs.project_name }} && ./gradlew assembleRelease
+          cd ${{ steps.build.outputs.project_name }} && ./gradlew assembleDebug
