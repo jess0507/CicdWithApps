@@ -4,11 +4,14 @@
 # documentation.
 
 name: Dart lint
+
 on: pull_request
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      project_name: ${{ steps.build.outputs.project_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
