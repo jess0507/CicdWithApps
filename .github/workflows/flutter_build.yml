@@ -9,21 +9,32 @@ on:
   push:
     branches: [ "test", "release" ]
 
-env:
-  project_name: ${{ github.head_ref }}
-  apps: |
-    [
-      "curriculum", 
-      "currency_conversion", 
-      "maio_photos", 
-      "playsee_story"
-    ]
-
 jobs:
+  affected-apps:
+    runs-on: ubuntu-latest
+    name: Try to choose a flutter app
+    strategy:
+      matrix:
+        project_name: [curriculum, currency_conversion, maio_photos, playsee_story, ]
+    outputs:
+        app: ${{ steps.step1.outputs.app}}
+    steps:
+      - uses: actions/checkout@v3
+      - id: step1
+        run: |
+          if startsWith(github.head_ref, '${{ matrix.project_name }}/') ; then
+            echo 'app=${{ matrix.project_name }}' >> "$GITHUB_OUTPUT"
+          fi
+
   build:
-    if: contains(env.apps, ${{ github.head_ref }})
+    needs: affected-apps
+    if: needs.affected-apps.outputs.app != ''
     runs-on: ubuntu-latest
     steps:
+      - name: Check if project matches
+        if: startsWith(github.head_ref, ${{ needs.affected-apps.outputs.app }}/)
+        run: echo "Project name ${{ needs.affected-apps.outputs.app }}"
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-java@v1
@@ -58,4 +69,4 @@ jobs:
       # Build Android Bundle release file
       - name: Build aab
         run: |
-          cd ${{ needs.affected-apps.outputs.app }} && flutter build apk
+          cd ${{ matrix.project_name }} && flutter build apk
