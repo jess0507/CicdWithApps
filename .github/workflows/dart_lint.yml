@@ -28,7 +28,7 @@ jobs:
             for item in "${array[@]}"; do
               echo "item, $item"
               if [[ "${{ github.head_ref }}" == *"$item"* ]]; then
-                echo "::set-output name=matched_value::$item"
+                echo "::set-output name=project_name::$item"
                 break
               fi
             done
@@ -37,49 +37,41 @@ jobs:
 
       - name: Use matched value
         run: |
-          matched_value=${{ steps.check_ref.outputs.matched_value }}
-          echo "Matched value is: $matched_value"
-
-  # build:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Project name
-  #       run: 
-  #         echo "${{ needs.affected-apps.outputs.app }}"
-  #         echo "${{ needs.affected-apps.outputs.test }}"
+          project_name=${{ steps.check_ref.outputs.project_name }}
+          echo "Project name is: $project_name"
       
-  #     - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-  #     - uses: actions/setup-java@v1
-  #       with:
-  #         java-version: '12.x'
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
           
-  #     - uses: subosito/flutter-action@v2
-  #       with:
-  #         channel: stable
-  #         flutter-version: 3.19.0
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.19.0
 
-  #     - name: Install dependencies
-  #       run: cd ${{ needs.affected-apps.outputs.app }} && flutter pub get
+      - name: Install dependencies
+        run: cd ${{ steps.check_ref.outputs.project_name }} && flutter pub get
 
-  #     - name: Generate files
-  #       run: cd ${{ needs.affected-apps.outputs.app}} && flutter pub run build_runner build --delete-conflicting-outputs
+      - name: Generate files
+        run: cd ${{ steps.check_ref.outputs.project_name }} && flutter pub run build_runner build --delete-conflicting-outputs
 
-  #     # Uncomment this step to verify the use of 'dart format' on each commit.
-  #     # - name: Verify formatting
-  #     #   run: dart format --output=none --set-exit-if-changed .
+      # Uncomment this step to verify the use of 'dart format' on each commit.
+      # - name: Verify formatting
+      #   run: dart format --output=none --set-exit-if-changed .
 
-  #     # Consider passing '--fatal-infos' for slightly stricter analysis.
-  #     - name: Analyze project source
-  #       run: cd ${{ needs.affected-apps.outputs.app}} && flutter analyze
+      # Consider passing '--fatal-infos' for slightly stricter analysis.
+      - name: Analyze project source
+        run: cd ${{ steps.check_ref.outputs.project_name }} && flutter analyze
 
-  #     # Your project will need to have tests in test/ and a dependency on
-  #     # package:test for this step to succeed. Note that Flutter projects will
-  #     # want to change this to 'flutter test'.
-  #     - name: Run tests
-  #       run: cd ${{ needs.affected-apps.outputs.app }} && flutter test
+      # Your project will need to have tests in test/ and a dependency on
+      # package:test for this step to succeed. Note that Flutter projects will
+      # want to change this to 'flutter test'.
+      - name: Run tests
+        run: cd ${{ steps.check_ref.outputs.project_name }} && flutter test
       
-  #     # Build Android Bundle release file
-  #     - name: Build aab
-  #       run: |
-  #         cd ${{ needs.affected-apps.outputs.app }} && flutter build apk
+      # Build Android Bundle release file
+      - name: Build aab
+        run: |
+          cd ${{ steps.check_ref.outputs.project_name }} && flutter build apk
