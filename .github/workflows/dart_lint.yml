@@ -33,6 +33,7 @@ jobs:
                 echo 'app=$item' >> "$GITHUB_OUTPUT"
               fi
             done
+            echo 'app=$project' >> "$GITHUB_OUTPUT"
 
   build:
     needs: affected-apps
