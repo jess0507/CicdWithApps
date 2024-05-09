@@ -42,7 +42,7 @@ jobs:
             do
               echo "item, $item"
               if [[ "$path" == "$item" ]]; then
-                echo "::set-env name=PROJECT_NAME::$item"
+                echo "PROJECT_NAME=ionex_homework" >> $GITHUB_ENV
                 break 2
               fi
             done
