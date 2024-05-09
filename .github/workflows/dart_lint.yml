@@ -10,10 +10,10 @@ env:
   project_name: ${{ github.head_ref }}
   apps: |
     [
-      "curriculum", 
-      "currency_conversion", 
-      "maio_photos", 
-      "playsee_story"
+      curriculum, 
+      currency_conversion, 
+      maio_photos, 
+      playsee_story
     ]
 
 jobs:
