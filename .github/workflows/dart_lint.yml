@@ -31,6 +31,8 @@ jobs:
             for item in "${array[@]}"; do
               echo "item, $item"
               if [[ "${{ github.head_ref }}" == *"$item"* ]]; then
+                echo "find path, $path"
+                echo "find item, $item"
                 echo "::set-output name=project_name::$item"
                 break
               fi
