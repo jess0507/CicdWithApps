@@ -37,12 +37,12 @@ jobs:
       - uses: actions/checkout@v3
       - id: step1
         run: |
-            project = $(echo "${{ github.head_ref }}" | cut -d '/' -f 2)
+            project=${{ github.head_ref }}
             array=${{ env.apps }}
             for item in ${array[*]}
             do
-              if [[ contains($item, $project) ]]; then
-                echo 'app=$project' >> "$GITHUB_OUTPUT"
+              if [[ *"$item"* == "$project" ]]; then
+                echo 'app=$item' >> "$GITHUB_OUTPUT"
               fi
             done
 
