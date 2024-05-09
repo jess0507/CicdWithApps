@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -116,7 +117,9 @@ void testGalleryPageContent() {
     // 檢查 AppBar 的文字是否正確顯示
     expect(find.text(LokaliseKey.galleryPage), findsOneWidget);
 
-    print("test photos' length: ${viewModel.state.photos.length}");
+    if (kDebugMode) {
+      print("test photos' length: ${viewModel.state.photos.length}");
+    }
     // 檢查 GridView 是否正確顯示照片
     expect(
         find.byType(PhotoItem), findsNWidgets(viewModel.state.photos.length));
@@ -127,7 +130,9 @@ void testGalleryPageContent() {
     // 重新構建 Widget 樹以反映最新的 viewmodel
     await tester.pump();
 
-    print("test photos' length: ${viewModel.state.photos.length}");
+    if (kDebugMode) {
+      print("test photos' length: ${viewModel.state.photos.length}");
+    }
     // 檢查 GridView 是否正確顯示照片
     expect(
         find.byType(PhotoItem), findsNWidgets(viewModel.state.photos.length));

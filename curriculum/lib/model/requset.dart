@@ -2,8 +2,6 @@ import 'package:dio/dio.dart';
 
 import '../api/api_service.dart';
 import 'api_request.dart';
-import 'course.dart';
-import 'teacher.dart';
 
 abstract class Request<T> {
   late final String path;
