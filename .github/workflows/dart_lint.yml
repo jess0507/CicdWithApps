@@ -7,7 +7,7 @@ name: Dart lint
 on: pull_request
 
 env:
-  project_name: ${{ github.ref }}
+  project_name: ${{ github.head_ref }}
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Set up project name
         id: split_ref
-        run: echo "::set-output name=project_name::$(echo ${{ github.ref }} | cut -d'/' -f1)"
+        run: echo "::set-output name=project_name::$(echo ${{ github.head_ref }} | cut -d'/' -f1)"
         
       - name: Display Project Name
         run: |
