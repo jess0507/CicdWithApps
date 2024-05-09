@@ -30,7 +30,7 @@ jobs:
             array=${{ env.apps }}
             for item in ${array[*]}
             do
-              if [[ "$item" == *"$project"* ]]; then
+              if [[ contains(item, project) ]]; then
                 echo 'app=$item' >> "$GITHUB_OUTPUT"
               fi
             done
