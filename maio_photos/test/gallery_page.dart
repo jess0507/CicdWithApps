@@ -130,9 +130,9 @@ void testGalleryPageContent() {
     // 重新構建 Widget 樹以反映最新的 viewmodel
     await tester.pump();
 
-    if (kDebugMode) {
-      print("test photos' length: ${viewModel.state.photos.length}");
-    }
+    // if (kDebugMode) {
+    print("test photos' length: ${viewModel.state.photos.length}");
+    // }
     // 檢查 GridView 是否正確顯示照片
     expect(
         find.byType(PhotoItem), findsNWidgets(viewModel.state.photos.length));
