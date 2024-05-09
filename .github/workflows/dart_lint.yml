@@ -13,13 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Set array variable
-        run: |
-          array=("curriculum" "currency_conversion" "maio_photos" "playsee_story")
-
       - name: Check if github.head_ref is in array
         id: build
         run: |
+          array=("curriculum" "currency_conversion" "maio_photos" "playsee_story")
           IN="${{ github.head_ref }}"
           IFS='/' read -ra paths <<< "$IN"
           for path in $paths
