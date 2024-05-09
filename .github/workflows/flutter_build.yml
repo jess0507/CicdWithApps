@@ -21,6 +21,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      project_name: ${{ steps.build.outputs.project_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -40,8 +42,10 @@ jobs:
             for item in "${array[@]}"; do
               echo "item, $item"
               if [[ "${{ github.head_ref }}" == *"$item"* ]]; then
+                echo "find path, $path"
+                echo "find item, $item"
                 echo "::set-output name=project_name::$item"
-                break
+                break 2
               fi
             done
           done

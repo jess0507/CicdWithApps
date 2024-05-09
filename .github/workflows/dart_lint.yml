@@ -34,7 +34,7 @@ jobs:
                 echo "find path, $path"
                 echo "find item, $item"
                 echo "::set-output name=project_name::$item"
-                break
+                break 2
               fi
             done
           done
