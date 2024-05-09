@@ -20,12 +20,20 @@ jobs:
       - name: Check if github.head_ref is in array
         id: check_ref
         run: |
-          for item in "${array[@]}"; do
-            if [[ "${{ github.head_ref }}" == *"$item"* ]]; then
-              echo "::set-output name=matched_value::$item"
-              break
-            fi
+          IN="${{ github.head_ref }}"
+          paths=$(echo $IN | tr "/")
+          for path in $paths
+          do
+            echo "path, $path"
+            for item in "${array[@]}"; do
+              echo "item, $item"
+              if [[ "${{ github.head_ref }}" == *"$item"* ]]; then
+                echo "::set-output name=matched_value::$item"
+                break
+              fi
+            done
           done
+          
 
       - name: Use matched value
         run: |
