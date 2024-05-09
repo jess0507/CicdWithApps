@@ -6,6 +6,10 @@
 name: Dart lint
 on: pull_request
 
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+  PROJECT_NAME: ""
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,7 +21,7 @@ jobs:
         id: build
         run: |
           array=("curriculum" "currency_conversion" "maio_photos" "playsee_story")
-          IN="${{ github.head_ref }}"
+          IN="${{ env.BRANCH_NAME }}"
           IFS='/' read -ra paths <<< "$IN"
           for path in $paths
           do
@@ -25,16 +29,15 @@ jobs:
             for item in "${array[@]}"; do
               echo "item, $item"
               if [[ "$path" == "$item" ]]; then
-                echo "::set-output name=project_name::$item"
+                echo "::set-env name=PROJECT_NAME::$item"
                 break 2
               fi
             done
           done
           
 
-      - name: Use matched value
+      - name: Project name
         run: |
-          project_name=${{ steps.build.outputs.project_name }}
           echo "Project name is: $project_name"
       
       - uses: actions/checkout@v4
@@ -49,10 +52,10 @@ jobs:
           flutter-version: 3.19.0
 
       - name: Install dependencies
-        run: cd ${{ steps.build.outputs.project_name }} && flutter pub get
+        run: cd ${{ env.PROJECT_NAME }} && flutter pub get
 
       - name: Generate files
-        run: cd ${{ steps.build.outputs.project_name}} && flutter pub run build_runner build --delete-conflicting-outputs
+        run: cd ${{ env.PROJECT_NAME }} && flutter pub run build_runner build --delete-conflicting-outputs
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
@@ -60,11 +63,11 @@ jobs:
 
       # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
-        run: cd ${{ steps.build.outputs.project_name}} && flutter analyze
+        run: cd ${{ env.PROJECT_NAME }} && flutter analyze
 
       # Your project will need to have tests in test/ and a dependency on
       # package:test for this step to succeed. Note that Flutter projects will
       # want to change this to 'flutter test'.
       - name: Run tests
-        run: cd ${{ steps.build.outputs.project_name }} && flutter test
+        run: cd ${{ env.PROJECT_NAME }} && flutter test
       

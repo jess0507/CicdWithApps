@@ -11,6 +11,7 @@ on:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+  PROJECT_NAME: ""
 
 jobs:
   build:
@@ -31,16 +32,14 @@ jobs:
             for item in "${array[@]}"; do
               echo "item, $item"
               if [[ "$path" == "$item" ]]; then
-                echo "::set-output name=project_name::$item"
+                echo "::set-env name=PROJECT_NAME::$item"
                 break 2
               fi
             done
           done
           
-
-      - name: Use matched value
+      - name: Project name
         run: |
-          project_name=${{ steps.build.outputs.project_name }}
           echo "Project name is: $project_name"
       
 
@@ -49,10 +48,6 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
-
-
-      - name: Set execute permissions for Gradle Wrapper
-        run: chmod +x ./gradlew
     
       - name: Build APK
-        run: ./gradlew assembleRelease
+        run: cd ${{ env.PROJECT_NAME }} && ./gradlew assembleRelease
