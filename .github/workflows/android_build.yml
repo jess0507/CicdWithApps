@@ -3,19 +3,15 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build flutter app
+name: Build android app
 
 on:
   push:
     branches: [ 
-      "test/curriculum", 
-      "release/curriculum",
-      "test/currency_conversion", 
-      "release/currency_conversion",
-      "test/maio_photos", 
-      "release/maio_photos",
-      "test/playsee_story", 
-      "release/playsee_story",
+      "test/ionex_homework", 
+      "release/ionex_homework",
+      "test/github_api", 
+      "release/github_api",
     ]
 
 jobs:
@@ -25,11 +21,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check if github.head_ref is in array
+      - name: Check if github.base_ref is in array
         id: build
         run: |
-          array=("curriculum" "currency_conversion" "maio_photos" "playsee_story")
-          IN="${{ github.head_ref }}"
+          array=("ionex_homework" "github_api")
+          IN="${{ github.base_ref }}"
           IFS='/' read -ra paths <<< "$IN"
           for path in $paths
           do
