@@ -6,31 +6,41 @@
 name: Dart lint
 on: pull_request
 
+env:
+  project_name: ${{ github.head_ref }}
+  apps: |
+    [
+      "curriculum", 
+      "currency_conversion", 
+      "maio_photos", 
+      "playsee_story"
+    ]
+
 jobs:
   affected-apps:
     runs-on: ubuntu-latest
     name: Try to choose a flutter app
-    strategy:
-      matrix:
-        project_name: [curriculum, currency_conversion, maio_photos, playsee_story, ]
     outputs:
         app: ${{ steps.step1.outputs.app}}
     steps:
       - uses: actions/checkout@v3
       - id: step1
         run: |
-          if startsWith(${{github.head_ref}}, ${{ matrix.project_name }}) ; then
-            echo 'app=${{ matrix.project_name }}' >> "$GITHUB_OUTPUT"
-          fi
+            array=${{ env.apps }}
+            for item in ${array[*]}
+            do
+              if [[ "$item" == ${{ env.project_name}} ]]; then
+                echo 'app=${{ env.project_name }}' >> "$GITHUB_OUTPUT"
+              fi
+            done
 
   build:
     needs: affected-apps
     if: needs.affected-apps.outputs.app != ''
     runs-on: ubuntu-latest
     steps:
-      - name: Check if project matches
-        if: startsWith(github.head_ref, ${{ needs.affected-apps.outputs.app }}/)
-        run: echo "Project name ${{ needs.affected-apps.outputs.app }}"
+      - name: Project name
+        run: echo "${{ env.project_name }}"
       
       - uses: actions/checkout@v4
 
