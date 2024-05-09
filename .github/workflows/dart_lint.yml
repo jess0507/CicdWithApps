@@ -7,6 +7,8 @@ name: Dart lint
 on: pull_request
 
 env:
+  project_name: 
+  test: 
   apps: |
     (
       "curriculum", 
