@@ -7,15 +7,21 @@ name: Dart lint
 on: pull_request
 
 env:
-  project_name: ${{ github.head_ref }}
+  project_name: ${{ github.ref }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:   
+    steps:
       - name: Set up project name
-        run: echo "project_name=${{ github.head_ref }} | cut -d '/' -f 1 " >> $GITHUB_ENV
+        id: split_ref
+        run: echo "::set-output name=project_name::$(echo ${{ github.ref }} | cut -d'/' -f1)"
+        
+      - name: Display Project Name
+        run: |
+          echo "Project Name: $project_name"
+          echo "Project Name Before Slash: $project_name"
 
       - name: Install dependencies
         run: cd ${{ env.project_name }} && flutter pub get  
