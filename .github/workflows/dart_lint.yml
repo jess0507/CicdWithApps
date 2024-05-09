@@ -27,7 +27,7 @@ jobs:
             echo "path, $path"
             for item in "${array[@]}"; do
               echo "item, $item"
-              if [[ "$path" == *"$item"* ]]; then
+              if [[ "$path" == "$item" ]]; then
                 echo "::set-output name=project_name::$item"
                 break 2
               fi
