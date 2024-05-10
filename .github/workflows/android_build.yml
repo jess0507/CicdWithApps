@@ -5,10 +5,8 @@ on:
     tags:
       - '*'
     branches: [ 
-      "test/ionex_homework", 
-      "release/ionex_homework",
-      "test/github_api", 
-      "release/github_api",
+      "android/test/*", 
+      "android/release/*",
     ]
 
 env:
