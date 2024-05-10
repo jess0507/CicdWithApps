@@ -7,8 +7,6 @@ name: Build flutter app
 
 on:
   push:
-    tags:
-      - '*'
     branches: [ 
       "flutter/test/*", 
       "flutter/release/*",

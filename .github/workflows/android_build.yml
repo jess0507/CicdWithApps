@@ -1,9 +1,7 @@
-name: Generated APK
+name: Build android apk
 
 on:
   push:
-    tags:
-      - '*'
     branches: [ 
       "android/test/*", 
       "android/release/*",
