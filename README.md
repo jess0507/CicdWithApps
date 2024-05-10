@@ -11,6 +11,6 @@
         - video player
 - Android
     1. github_api
-    2. ionex_homework
+    2. [ionex_homework](https://github.com/merukoo0507/interview_homework/tree/develop/ionex_homework)
        - [CI](https://github.com/merukoo0507/interview_homework/actions/runs/9027198327)
     
