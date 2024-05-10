@@ -10,14 +10,8 @@ on:
     tags:
       - '*'
     branches: [ 
-      "test/curriculum", 
-      "release/curriculum",
-      "test/currency_conversion", 
-      "release/currency_conversion",
-      "test/maio_photos", 
-      "release/maio_photos",
-      "test/playsee_story", 
-      "release/playsee_story",
+      "test/*", 
+      "release/*",
     ]
 
 env:
