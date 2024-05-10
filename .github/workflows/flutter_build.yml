@@ -10,8 +10,8 @@ on:
     tags:
       - '*'
     branches: [ 
-      "test/*", 
-      "release/*",
+      "flutter/test/*", 
+      "flutter/release/*",
     ]
 
 env:
