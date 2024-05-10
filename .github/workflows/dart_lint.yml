@@ -12,11 +12,11 @@ on:
     ]
 
 env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+  BRANCH_NAME: ${{ github.base_ref }} 
   PROJECT_NAME: ""
 
 jobs:
-  build:
+  flutter-check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -28,7 +28,7 @@ jobs:
           array=("curriculum" "currency_conversion" "maio_photos" "playsee_story")
           IN="${{ env.BRANCH_NAME }}"
           IFS='/' read -ra paths <<< "$IN"
-          for path in $paths
+          for path in "${paths[@]}"
           do
             echo "path, $path"
             for item in "${array[@]}"; do
