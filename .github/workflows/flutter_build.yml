@@ -19,7 +19,7 @@ env:
   PROJECT_NAME: ""
 
 jobs:
-  build:
+  flutter-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

@@ -16,7 +16,7 @@ env:
   PROJECT_NAME: ""
 
 jobs:
-  build:
+  android-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
