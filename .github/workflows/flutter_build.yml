@@ -21,7 +21,7 @@ env:
 
 jobs:
   flutter-build:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -60,6 +60,10 @@ jobs:
           channel: stable
           flutter-version: 3.19.0
 
+      - uses: futureware-tech/simulator-action@v3
+        with:
+          model: 'iPhone 14'
+
       - name: Install dependencies
         run: cd ${{ env.PROJECT_NAME }} && flutter pub get
 
@@ -73,11 +77,6 @@ jobs:
       # Consider passing '--fatal-infos' for slightly stricter analysis.
       - name: Analyze project source
         run: cd ${{ env.PROJECT_NAME }}  && flutter analyze
-
-
-      - uses: futureware-tech/simulator-action@v3
-        with:
-          model: 'iPhone 14'
           
       # Your project will need to have tests in test/ and a dependency on
       # package:test for this step to succeed. Note that Flutter projects will
