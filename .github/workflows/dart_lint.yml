@@ -16,6 +16,7 @@ on:
 env:
   BRANCH_NAME: ${{ github.base_ref }} 
   PROJECT_NAME: ""
+  FLUTTER_PROJECT_LIST: ("curriculum" "currency_conversion" "maio_photos" "playsee_story" "meep_todo")
 
 jobs:
   flutter-check:
@@ -27,7 +28,7 @@ jobs:
       - name: Check if github.head_ref is in array
         id: build
         run: |
-          array=("curriculum" "currency_conversion" "maio_photos" "playsee_story")
+          array=${{ env.FLUTTER_PROJECT_LIST }}
           IN="${{ env.BRANCH_NAME }}"
           IFS='/' read -ra paths <<< "$IN"
           for path in "${paths[@]}"
@@ -75,5 +76,5 @@ jobs:
       # package:test for this step to succeed. Note that Flutter projects will
       # want to change this to 'flutter test'.
       - name: Run tests
-        run: cd ${{ env.PROJECT_NAME }} && flutter test
+        run: cd ${{ env.PROJECT_NAME }} && flutter test && flutter test integration_test
       
