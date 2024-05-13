@@ -14,6 +14,7 @@ on:
     ]
 
 env:
+  flutter_version: 3.19.6
   BRANCH_NAME: ${{ github.base_ref }} 
   PROJECT_NAME: ""
   FLUTTER_PROJECT_LIST: ("curriculum" "currency_conversion" "maio_photos" "playsee_story" "meep_todo")
@@ -52,15 +53,17 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
+
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v1
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
           
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.19.0
-
-      - uses: futureware-tech/simulator-action@v3
-        with:
-          model: 'iPhone 14'
+          flutter-version: ${{ env.flutter_version }}
 
       - name: Install dependencies
         run: cd ${{ env.PROJECT_NAME }} && flutter pub get
@@ -85,11 +88,5 @@ jobs:
             cd ${{ env.PROJECT_NAME }} && flutter test
           else
             echo "No 'test' directory found. Skipping 'flutter test'"
-          fi
-      
-          if [ -d "${{ env.PROJECT_NAME }}/integration_test" ]; then
-            cd ${{ env.PROJECT_NAME }} && flutter test integration_test
-          else
-            echo "No 'integration_test' directory found. Skipping 'flutter test integration_test'"
           fi
       

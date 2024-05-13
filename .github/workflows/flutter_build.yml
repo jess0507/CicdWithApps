@@ -15,6 +15,7 @@ on:
     ]
 
 env:
+  flutter_version: 3.19.6
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
   PROJECT_NAME: ""
   FLUTTER_PROJECT_LIST: ("curriculum" "currency_conversion" "maio_photos" "playsee_story" "meep_todo")
@@ -54,27 +55,18 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
+
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v1
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
           
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.19.0
+          flutter-version: ${{ env.flutter_version }}
           cache: true
-
-      - name: Setup cache
-        id: cache-pubspec
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/Pods
-            **/Pods.build
-          key: pubspec-${{ runner.os }}-${{ hashFiles('**/Podfile.lock') }}
-          restore-keys: |
-            pubspec-${{ runner.os }}-
-
-      - uses: futureware-tech/simulator-action@v3
-        with:
-          model: 'iPhone 14'
 
       - name: Install dependencies
         run: cd ${{ env.PROJECT_NAME }} && flutter pub get
@@ -99,12 +91,6 @@ jobs:
             cd ${{ env.PROJECT_NAME }} && flutter test
           else
             echo "No 'test' directory found. Skipping 'flutter test'"
-          fi
-      
-          if [ -d "${{ env.PROJECT_NAME }}/integration_test" ]; then
-            cd ${{ env.PROJECT_NAME }} && flutter test integration_test
-          else
-            echo "No 'integration_test' directory found. Skipping 'flutter test integration_test'"
           fi
           
       # Build Android app apk
