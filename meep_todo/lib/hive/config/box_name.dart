@@ -1,0 +1,4 @@
+enum BoxName {
+  todo,
+  importance,
+}
