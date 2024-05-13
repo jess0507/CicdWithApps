@@ -7,6 +7,8 @@ name: Dart lint
 on: 
   pull_request:
     branches: [ 
+      "flutter/test", 
+      "flutter/release", 
       "flutter/test/*", 
       "flutter/release/*",
     ]
