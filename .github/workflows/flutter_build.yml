@@ -33,12 +33,14 @@ jobs:
           array=${{ env.FLUTTER_PROJECT_LIST }}
           IN="${{ env.BRANCH_NAME }}"
           read -ra paths <<< "$(echo $IN | sed 's/[\/-]/ /g')"
+
+          echo "paths:  ${paths[@]}"
+          echo "project list:  ${array[@]}"
+
           for path in "${paths[@]}"
           do
-            echo "path, $path"
             for item in "${array[@]}"; 
             do
-              echo "item, $item"
               if [[ "$path" == "$item" ]]; then
                 echo "PROJECT_NAME=$item" >> $GITHUB_ENV
                 break 2
