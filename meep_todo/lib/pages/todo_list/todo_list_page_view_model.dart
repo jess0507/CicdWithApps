@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:meep_todo/hive/repository/photo_hive_local_storage.dart';
+import 'package:meep_todo/hive/repository/todo_hive_local_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meep_todo/model/todo.dart';
 import 'package:meep_todo/pages/todo_list/todo_list_page_view_model_state.dart';
