@@ -3,7 +3,7 @@
     1. [meep_todo](https://github.com/merukoo0507/interview_homework/tree/flutter/test/meep_todo/meep_todo)
         - storage
         - intergation test
-        - android CI
+        - [android CI](https://github.com/merukoo0507/interview_homework/actions/runs/9073481966)
 
     2. [playsee_story](https://github.com/merukoo0507/interview_homework/tree/develop/playsee_story)
         - video player
@@ -11,7 +11,7 @@
     3. [maio_photos](https://github.com/merukoo0507/interview_homework/tree/develop/maio_photos)
         - storage 
         - unit test, with pull request [check](https://github.com/merukoo0507/interview_homework/pull/12)
-        - [CI](https://github.com/merukoo0507/interview_homework/actions/runs/9026916990)
+        - [android CI](https://github.com/merukoo0507/interview_homework/actions/runs/9073247144)
 
     4. [currency_conversion](https://github.com/merukoo0507/interview_homework/tree/develop/currency_conversion)
     
