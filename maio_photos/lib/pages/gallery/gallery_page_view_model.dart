@@ -33,11 +33,7 @@ class GalleryPageViewmodel extends StateNotifier<GalleryPageViewModelState> {
     try {
       final res = await GetPhotosRequest().request();
       final List<Photo> list = res.deserializedData;
-      final Map<int, Photo> map = {
-        for (var element in list.where((element) => element.id != null))
-          element.id!: element
-      };
-      await PhotoHiveLocalStorage().updateAll(entries: map);
+      await PhotoHiveLocalStorage().addAll(list: list);
     } catch (e) {
       Fimber.d('Error to fetchPhotos, e: $e');
     }

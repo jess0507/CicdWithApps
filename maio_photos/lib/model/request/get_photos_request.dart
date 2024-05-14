@@ -11,8 +11,13 @@ class GetPhotosRequest extends Request<List<Photo>> {
 
   @override
   List<Photo> deserialize(Response response) {
-    List<Photo> list =
-        response.data.map((json) => Photo.fromMap(json)).toList();
-    return list;
+    // Check if data is a List
+    if (response.data is List<dynamic>) {
+      // Convert each item to Photo object
+      return List<Photo>.from(response.data.map((item) => Photo.fromMap(item)));
+    } else {
+      // If data is not a List, return empty list
+      return [];
+    }
   }
 }

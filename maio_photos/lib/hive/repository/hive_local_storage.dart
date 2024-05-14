@@ -8,6 +8,14 @@ class HiveLocalStorage<T> {
 
   HiveLocalStorage({required this.boxName});
 
+  Future<void> add({required T value}) async {
+    await box.add(value);
+  }
+
+  Future<void> addAll({required List<T> list}) async {
+    await box.addAll(list);
+  }
+
   Future<void> update({required int key, required T value}) async {
     await box.put(key, value);
   }
