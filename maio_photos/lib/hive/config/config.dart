@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../model/db/entity/photo.dart';
 import 'box_name.dart';
+import 'hive_type_id.dart';
 
 Future<void> initialHive() async {
   await Hive.initFlutter();
@@ -13,7 +14,9 @@ Future<void> initialHive() async {
 }
 
 void registerHiveAdapters() {
-  Hive.registerAdapter(PhotoAdapter());
+  if (!Hive.isAdapterRegistered(HiveTypeId.photo)) {
+    Hive.registerAdapter(PhotoAdapter());
+  }
 }
 
 Future openHiveBoxs() async {

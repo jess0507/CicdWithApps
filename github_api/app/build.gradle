@@ -18,9 +18,9 @@ android {
     }
 
     buildTypes {
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file('local.properties').newDataInputStream())
-        def defaultToken = properties.getProperty('token')
+//        Properties properties = new Properties()
+//        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+//        def defaultToken = properties.getProperty('token')
 //        debug {
 //            buildConfigField 'String', 'token', defaultToken
 //        }

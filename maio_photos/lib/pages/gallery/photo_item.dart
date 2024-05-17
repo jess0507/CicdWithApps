@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../model/db/entity/photo.dart';
@@ -15,10 +16,11 @@ class PhotoItem extends StatelessWidget {
     final itemWidth = MediaQuery.of(context).size.width ~/ 4;
     return Stack(
       children: [
-        Image.network(
-          '${photo.url}',
-          cacheHeight: itemWidth,
-          cacheWidth: itemWidth,
+        CachedNetworkImage(
+          imageUrl: photo.imageUrl,
+          placeholder: (context, url) => const CircularProgressIndicator(),
+          memCacheWidth: itemWidth,
+          memCacheHeight: itemWidth,
         ),
         Column(
           children: [

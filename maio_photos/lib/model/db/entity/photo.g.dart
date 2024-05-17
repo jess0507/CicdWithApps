@@ -8,7 +8,7 @@ part of 'photo.dart';
 
 class PhotoAdapter extends TypeAdapter<Photo> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
   Photo read(BinaryReader reader) {

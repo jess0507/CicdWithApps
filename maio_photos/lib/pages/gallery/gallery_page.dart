@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class GalleryPage extends ConsumerWidget {
+  static const routeName = 'gallery_page';
+
   const GalleryPage({super.key});
 
   @override
