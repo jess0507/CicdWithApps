@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fimber/fimber.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../api/api_service.dart';
 import 'api_request.dart';
@@ -36,13 +37,16 @@ abstract class Request<T> {
       parameters: parameters,
       data: data,
     );
-
+    final requestLog =
+        Map.of({'event': 'request', 'request': request.toString()});
+    Fimber.e(requestLog.toString());
     final response = await ApiService().request(request);
+    final deserializeData = compute(deserialize, response);
     HttpResponse httpResponse;
     try {
       httpResponse = HttpResponse(
         response: response,
-        deserializedData: deserialize(response),
+        deserializedData: deserializeData,
       );
     } catch (e) {
       Fimber.e('Error to deserialize data.');

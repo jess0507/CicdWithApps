@@ -20,7 +20,6 @@ class GalleryPageViewmodel extends StateNotifier<GalleryPageViewModelState> {
 
   GalleryPageViewmodel() : super(GalleryPageViewModelState.empty()) {
     initPhotos();
-    listenPhotos();
     fetchPhotos();
   }
 
@@ -33,16 +32,16 @@ class GalleryPageViewmodel extends StateNotifier<GalleryPageViewModelState> {
     try {
       final res = await GetPhotosRequest().request();
       final List<Photo> list = res.deserializedData;
-      await PhotoHiveLocalStorage().addAll(list: list);
+      Fimber.d('fetchPhotos: ${list.length}');
+      update(list: list);
+      final Map<int, Photo> map = {
+        for (var element in list)
+          if (element.id != null) element.id!: element
+      };
+      PhotoHiveLocalStorage().updateAll(entries: map);
     } catch (e) {
       Fimber.d('Error to fetchPhotos, e: $e');
     }
-  }
-
-  void listenPhotos() {
-    PhotoHiveLocalStorage().watchList().listen((event) {
-      update(list: event);
-    }).addTo(_subscription);
   }
 
   void update({required List<Photo> list}) {

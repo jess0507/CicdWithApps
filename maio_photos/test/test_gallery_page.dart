@@ -1,0 +1,44 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+import 'package:maio_photos/model/db/entity/photo.dart';
+import 'package:maio_photos/pages/gallery/gallery_page.dart';
+import 'package:maio_photos/pages/gallery/gallery_page_view_model.dart';
+import 'package:maio_photos/pages/gallery/photo_item.dart';
+import 'package:maio_photos/util/lokalise_key.dart';
+
+import 'test_data.dart';
+
+Future<void> testGalleryPage(WidgetTester tester) async {
+  // 創建一個假的 ViewModel 以提供照片
+  final viewModel = GalleryPageViewmodel.empty();
+  List<Photo> list =
+      jsonDecode(testData).map<Photo>((json) => Photo.fromMap(json)).toList();
+  viewModel.update(list: list);
+
+  // 用假的 ViewModel 包裝 GalleryPage
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        // 使用 provider 覆寫以提供假的 ViewModel
+        galleryPageViewmodel.overrideWith((ref) => viewModel),
+      ],
+      child: const MaterialApp(
+        home: GalleryPage(),
+      ),
+    ),
+  );
+
+  // 檢查 AppBar 的文字是否正確顯示
+  expect(find.text(LokaliseKey.galleryPage), findsOneWidget);
+
+  if (kDebugMode) {
+    print("test photos' length: ${viewModel.state.photos.length}");
+  }
+  // 檢查 GridView 是否正確顯示照片
+  expect(find.byType(PhotoItem), findsNWidgets(viewModel.state.photos.length));
+}

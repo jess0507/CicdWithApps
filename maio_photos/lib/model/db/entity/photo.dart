@@ -1,9 +1,11 @@
 import 'package:hive/hive.dart';
 import 'dart:convert';
 
+import 'package:maio_photos/hive/config/hive_type_id.dart';
+
 part 'photo.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: HiveTypeId.photo)
 class Photo extends HiveObject {
   @HiveField(1)
   final int? albumId;
@@ -15,6 +17,8 @@ class Photo extends HiveObject {
   final String? url;
   @HiveField(5)
   final String? thumbnailUrl;
+
+  String get imageUrl => url ?? '';
 
   Photo({
     this.albumId,
