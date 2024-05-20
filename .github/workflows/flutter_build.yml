@@ -88,7 +88,7 @@ jobs:
       - name: Extract version and version code from git tag
         id: extract_version
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
+          TAG_NAME=$(git describe --tags --abbrev=0)
           VERSION_NAME=$(echo $TAG_NAME | sed 's/^v//')
           VERSION_CODE=$(echo $VERSION_NAME | awk -F. '{print $1$2$3}')
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
@@ -96,13 +96,13 @@ jobs:
 
       - name: Update version in pubspec.yaml
         run: |
-          sed -i.bak "s/^version:.*/version: $VERSION_NAME/" ${{ env.PROJECT_NAME }}/pubspec.yaml
+          sed -i '' "s/^version:.*/version: $VERSION_NAME/" ${{ env.PROJECT_NAME }}/pubspec.yaml
           cat ${{ env.PROJECT_NAME }}/pubspec.yaml
 
       - name: Update version code in Android's build.gradle
         run: |
-          sed -i.bak "s/versionCode [0-9]*/versionCode $VERSION_CODE/" ${{ env.PROJECT_NAME }}/android/app/build.gradle
-          sed -i.bak "s/versionName \".*\"/versionName \"$VERSION_NAME\"/" ${{ env.PROJECT_NAME }}/android/app/build.gradle
+          sed -i '' "s/versionCode [0-9]*/versionCode $VERSION_CODE/" ${{ env.PROJECT_NAME }}/android/app/build.gradle
+          sed -i '' "s/versionName \".*\"/versionName \"$VERSION_NAME\"/" ${{ env.PROJECT_NAME }}/android/app/build.gradle
           cat ${{ env.PROJECT_NAME }}/android/app/build.gradle
 
       - name: Install dependencies
