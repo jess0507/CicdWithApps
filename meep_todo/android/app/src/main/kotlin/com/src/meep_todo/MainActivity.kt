@@ -1,4 +1,4 @@
-package com.example.meep_todo
+package com.src.meep_todo
 
 import io.flutter.embedding.android.FlutterActivity
 
