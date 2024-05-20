@@ -33,6 +33,8 @@ env:
 jobs:
   flutter-job:
     runs-on: macOS-latest
+    outputs:
+      project_name: ${{ steps.project_name_step.outputs.project_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -112,11 +114,12 @@ jobs:
     needs: [flutter-job]
     if: startsWith(github.head_ref || github.ref_name, 'flutter/test')
     runs-on: macOS-latest
+    env:
+      PROJECT_NAME: ${{ needs.flutter-job.outputs.project_name }}
     steps:
       - name: Build debug apk
         # Build Android app apk
         run: |
-            echo "PROJECT_NAME=${{ needs.flutter-job.steps.project_name_step.outputs.project_name }}" >> $GITHUB_ENV
             cd ${{ env.PROJECT_NAME }} && flutter build apk --debug
             echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-debug.apk" >> $GITHUB_ENV
         
@@ -129,11 +132,12 @@ jobs:
     needs: [flutter-job]
     if: startsWith(github.head_ref || github.ref_name, 'flutter/release')
     runs-on: macOS-latest
+    env:
+      PROJECT_NAME: ${{ needs.flutter-job.outputs.project_name }}
     steps:
       - name: Build release apk
         run: |
-          echo "PROJECT_NAME=${{ needs.flutter-job.steps.project_name_step.outputs.project_name }}" >> $GITHUB_ENV
-          cd ${{ env.PROJECT_NAME }} && flutter build apk
+          cd ${{ env.PROJECT_NAME }} && flutter build apk --release
           echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-release.apk" >> $GITHUB_ENV
       
       - uses: actions/upload-artifact@v4
