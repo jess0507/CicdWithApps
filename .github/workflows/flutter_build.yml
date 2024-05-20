@@ -85,6 +85,11 @@ jobs:
           flutter-version: ${{ env.flutter_version }}
           cache: true
 
+      - name: Check if tags are fetched
+        run: |
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git tag -l
+
       - name: Extract version and version code from git tag
         id: extract_version
         run: |
