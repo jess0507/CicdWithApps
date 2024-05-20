@@ -122,6 +122,12 @@ jobs:
           name: app-dubug.apk
           path: ${{ env.APP_PATH }}
 
+      - name: Setting signing release andoid
+        run: |
+          echo "${{ secrets.KAFKA_ANDROID_KEY_STORE }}" | base64 --decode > ${{ env.KEYSTORE_PATH }}
+          echo "${{ secrets.KAFKA_ANDROID_KEY_PROPERTIES }}" | base64 --decode > ${{ env.KEY_PROPS_PATH }}
+          echo "${{ secrets.KAFKA_ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}
+
       - name: Build release apk
         if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
         run: |
@@ -137,15 +143,12 @@ jobs:
       - name: Build release aab
         if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
         run: |
-          echo "${{ secrets.KAFKA_ANDROID_KEY_STORE }}" | base64 --decode > ${{ env.KEYSTORE_PATH }}
-          echo "${{ secrets.KAFKA_ANDROID_KEY_PROPERTIES }}" | base64 --decode > ${{ env.KEY_PROPS_PATH }}
-          echo "${{ secrets.KAFKA_ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}
           cd ${{ env.PROJECT_NAME }} && flutter build appbundle --release
           echo "AAB_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/bundle/release/app-release.aab" >> $GITHUB_ENV
 
       - name: Upload generated aab to the artifacts
-        uses: actions/upload-artifact@v4
         if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
+        uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
           path: ${{ env.AAB_PATH }}
