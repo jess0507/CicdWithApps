@@ -83,14 +83,8 @@ jobs:
 
       - name: Update version in pubspec.yaml
         run: |
-          sed -i '' "s/^version:.*/version: $VERSION_NAME/" ${{ env.PROJECT_NAME }}/pubspec.yaml
+          sed -i '' "s/^version:.*/version: $VERSION_NAME+$VERSION_CODE/" ${{ env.PROJECT_NAME }}/pubspec.yaml
           cat ${{ env.PROJECT_NAME }}/pubspec.yaml
-
-      - name: Update version code in Android's build.gradle
-        run: |
-          sed -i '' "s/versionCode [0-9]*/versionCode $VERSION_CODE/" ${{ env.PROJECT_NAME }}/android/app/build.gradle
-          sed -i '' "s/versionName \".*\"/versionName \"$VERSION_NAME\"/" ${{ env.PROJECT_NAME }}/android/app/build.gradle
-          cat ${{ env.PROJECT_NAME }}/android/app/build.gradle
 
       - uses: actions/setup-java@v4
         with:
