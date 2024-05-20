@@ -25,9 +25,9 @@ env:
   APP_PATH: ""
 
   AAB_PATH: build/app/outputs/bundle/release/app-release.aab
-  KEYSTORE_PATH: ../kafka/upload-keystore.jks
-  KEY_PROPS_PATH: ../kafka/key.properties
-  SERVICE_ACCOUNT_PATH: ../kafka/store_credentials.json
+  KEYSTORE_PATH: ../../../../kafka/upload-keystore.jks
+  KEY_PROPS_PATH: ../../../../kafka/key.properties
+  SERVICE_ACCOUNT_PATH: store_credentials.json
   PACKAGE_NAME: com.src.kafka
 
 jobs:
