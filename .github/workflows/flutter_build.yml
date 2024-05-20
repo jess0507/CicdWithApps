@@ -112,7 +112,7 @@ jobs:
 
       - name: Extract Android Package Name
         run: |
-          PACKAGE_NAME=$(grep -oP 'package="\K[^"]+' app/src/main/AndroidManifest.xml)
+          PACKAGE_NAME=$(grep -oP 'package="\K[^"]+' ${{ env.PROJECT_NAME }}/android/app/src/main/AndroidManifest.xml)
           echo "Package Name: $PACKAGE_NAME"
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
 
