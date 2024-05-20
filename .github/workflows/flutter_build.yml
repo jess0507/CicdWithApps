@@ -19,6 +19,9 @@ env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
   PROJECT_NAME: ""
   FLUTTER_PROJECT_LIST: ("curriculum" "currency_conversion" "maio_photos" "playsee_story" "meep_todo")
+
+  TEST_BRANCH_PRIFIX: flutter/test
+  RELEASE_BRANCH_PRIFIX: flutter/release
   APP_PATH: ""
 
   AAB_PATH: build/app/outputs/bundle/release/app-release.aab
@@ -28,7 +31,7 @@ env:
   PACKAGE_NAME: com.src.kafka
 
 jobs:
-  flutter-build:
+  flutter-job:
     runs-on: macOS-latest
     steps:
       - name: Checkout code
@@ -64,6 +67,7 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
+          cache: 'gradle'
 
       - name: Cache Flutter dependencies
         uses: actions/cache@v1
@@ -102,16 +106,23 @@ jobs:
             echo "No 'test' directory found. Skipping 'flutter test'"
           fi
   
+  build-test: 
+    needs: [flutter-job]
+    if: startsWith(github.head_ref || github.ref_name, 'flutter/test')
+    runs-on: macOS-latest
+    steps:
       - name: Build debug apk
-        if: startsWith(github.head_ref, 'flutter/test')
         # Build Android app apk
         run: |
             cd ${{ env.PROJECT_NAME }} && flutter build apk --debug
             echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-debug.apk" >> $GITHUB_ENV
         
-
+  build-release: 
+    needs: [flutter-job]
+    if: startsWith(github.head_ref || github.ref_name, 'flutter/release')
+    runs-on: macOS-latest
+    steps:
       - name: Build release apk
-        if: startsWith(github.head_ref, 'flutter/release')
         run: |
           cd ${{ env.PROJECT_NAME }} && flutter build apk
           echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-release.apk" >> $GITHUB_ENV
@@ -123,7 +134,7 @@ jobs:
 
       
       - name: Build release aab
-        if: startsWith(github.head_ref, 'flutter/release')
+        if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
         run: |
           echo "${{ secrets.KAFKA_ANDROID_KEY_STORE }}" | base64 --decode > ${{ env.KEYSTORE_PATH }}
           echo "${{ secrets.KAFKA_ANDROID_KEY_PROPERTIES }}" | base64 --decode > ${{ env.KEY_PROPS_PATH }}

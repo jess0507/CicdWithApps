@@ -51,11 +51,22 @@ android {
         versionName flutterVersionName
     }
 
+    def keystoreProperties = new Properties()
+    def keystorePropertiesFile = rootProject.file('../../../kafka/key.properties')
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    }
+    signingConfigs {
+       release {
+           keyAlias keystoreProperties['keyAlias']
+           keyPassword keystoreProperties['keyPassword']
+           storeFile keystoreProperties['storeFile'] ? file('../../../../kafka/upload-keystore.jks') : null
+           storePassword keystoreProperties['storePassword']
+       }
+    }
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }
