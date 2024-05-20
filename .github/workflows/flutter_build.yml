@@ -20,9 +20,21 @@ env:
   PROJECT_NAME: ""
   FLUTTER_PROJECT_LIST: ("curriculum" "currency_conversion" "maio_photos" "playsee_story" "meep_todo")
 
+  TEST_BRANCH_PRIFIX: flutter/test
+  RELEASE_BRANCH_PRIFIX: flutter/release
+  APP_PATH: ""
+
+  AAB_PATH: build/app/outputs/bundle/release/app-release.aab
+  KEYSTORE_PATH: upload-keystore.jks
+  KEY_PROPS_PATH: key.properties
+  SERVICE_ACCOUNT_PATH: store_credentials.json
+  APPLICATION_ID: com.src.kafka
+
 jobs:
-  flutter-build:
+  flutter-job:
     runs-on: macOS-latest
+    outputs:
+      project_name: ${{ steps.project_name_step.outputs.project_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -50,16 +62,38 @@ jobs:
           
 
       - name: Project name
+        id: project_name_step
         run: |
           echo "Project name is: ${{ env.PROJECT_NAME }}"
+          echo "::set-output name=project_name::${{ env.PROJECT_NAME }}"
+      
+      - name: Check if tags are fetched
+        run: |
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git tag -l
+
+      - name: Extract version and version code from git tag
+        id: extract_version
+        run: |
+          TAG_NAME=$(git tag --sort=committerdate | tail -n1)
+          VERSION_NAME=$(echo $TAG_NAME | sed 's/^v//')
+          VERSION_CODE=$(echo $VERSION_NAME | awk -F. '{print $1$2$3}')
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+
+      - name: Update version in pubspec.yaml
+        run: |
+          sed -i '' "s/^version:.*/version: $VERSION_NAME+$VERSION_CODE/" ${{ env.PROJECT_NAME }}/pubspec.yaml
+          cat ${{ env.PROJECT_NAME }}/pubspec.yaml
 
       - uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
           java-version: '11'
+          cache: 'gradle'
 
       - name: Cache Flutter dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: /opt/hostedtoolcache/flutter
           key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
@@ -94,14 +128,65 @@ jobs:
           else
             echo "No 'test' directory found. Skipping 'flutter test'"
           fi
-          
-      # Build Android app apk
-      - name: Build debug apk
+
+      - name: Extract Android applicationId
         run: |
-          cd ${{ env.PROJECT_NAME }} && flutter build apk
-    
+          APPLICATION_ID=$(grep 'applicationId' ${{ env.PROJECT_NAME }}/android/app/build.gradle | sed 's/.*applicationId[[:space:]]*"[[:space:]]*//; s/"//g')
+          echo "Application Id: $APPLICATION_ID"
+          echo "APPLICATION_ID=$APPLICATION_ID" >> $GITHUB_ENV
+
+      - name: Build debug apk
+        if: startsWith(env.BRANCH_NAME, env.TEST_BRANCH_PRIFIX)
+        run: |
+            cd ${{ env.PROJECT_NAME }} && flutter build apk --debug
+            echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-debug.apk" >> $GITHUB_ENV
+      
       - uses: actions/upload-artifact@v4
+        if: startsWith(env.BRANCH_NAME, env.TEST_BRANCH_PRIFIX)
+        with: 
+          name: app-dubug.apk
+          path: ${{ env.APP_PATH }}
+
+      - name: Setting signing release andoid
+        run: |
+          echo "${{ secrets.KAFKA_ANDROID_KEY_STORE }}" | base64 --decode > ${{ env.KEYSTORE_PATH }}
+          echo "${{ secrets.KAFKA_ANDROID_KEY_PROPERTIES }}" | base64 --decode > ${{ env.KEY_PROPS_PATH }}
+          echo "${{ secrets.KAFKA_ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}
+
+      - name: Build release apk
+        if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
+        run: |
+          cd ${{ env.PROJECT_NAME }} && flutter build apk --release
+          echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-release.apk" >> $GITHUB_ENV
+          
+      - uses: actions/upload-artifact@v4
+        if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
         with: 
           name: app-release.apk
-          path: ${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-release.apk
-        
+          path: ${{ env.APP_PATH }}
+
+      - name: Build release aab
+        if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
+        run: |
+          cd ${{ env.PROJECT_NAME }} && flutter build appbundle --release
+          echo "AAB_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/bundle/release/app-release.aab" >> $GITHUB_ENV
+
+      - name: Upload generated aab to the artifacts
+        if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.aab
+          path: ${{ env.AAB_PATH }}
+
+      # Deploy bundle to Google Play internal testing
+      - name: Deploy to Play Store (Internal testing)
+        if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ env.SERVICE_ACCOUNT_PATH }}
+          packageName: ${{ env.APPLICATION_ID }}
+          releaseFiles: ${{ env.AAB_PATH }}
+          track: internal
+          status: draft
+    
+          
