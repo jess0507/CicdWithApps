@@ -110,6 +110,12 @@ jobs:
             echo "No 'test' directory found. Skipping 'flutter test'"
           fi
 
+      - name: Extract Android Package Name
+        run: |
+          PACKAGE_NAME=$(grep -oP 'package="\K[^"]+' app/src/main/AndroidManifest.xml)
+          echo "Package Name: $PACKAGE_NAME"
+          echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+
       - name: Build debug apk
         if: startsWith(env.BRANCH_NAME, env.TEST_BRANCH_PRIFIX)
         run: |
