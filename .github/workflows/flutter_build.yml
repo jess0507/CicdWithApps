@@ -66,6 +66,31 @@ jobs:
         run: |
           echo "Project name is: ${{ env.PROJECT_NAME }}"
           echo "::set-output name=project_name::${{ env.PROJECT_NAME }}"
+      
+      - name: Check if tags are fetched
+        run: |
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+          git tag -l
+
+      - name: Extract version and version code from git tag
+        id: extract_version
+        run: |
+          TAG_NAME=$(git tag --sort=committerdate | tail -n1)
+          VERSION_NAME=$(echo $TAG_NAME | sed 's/^v//')
+          VERSION_CODE=$(echo $VERSION_NAME | awk -F. '{print $1$2$3}')
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+
+      - name: Update version in pubspec.yaml
+        run: |
+          sed -i '' "s/^version:.*/version: $VERSION_NAME/" ${{ env.PROJECT_NAME }}/pubspec.yaml
+          cat ${{ env.PROJECT_NAME }}/pubspec.yaml
+
+      - name: Update version code in Android's build.gradle
+        run: |
+          sed -i '' "s/versionCode [0-9]*/versionCode $VERSION_CODE/" ${{ env.PROJECT_NAME }}/android/app/build.gradle
+          sed -i '' "s/versionName \".*\"/versionName \"$VERSION_NAME\"/" ${{ env.PROJECT_NAME }}/android/app/build.gradle
+          cat ${{ env.PROJECT_NAME }}/android/app/build.gradle
 
       - uses: actions/setup-java@v4
         with:
@@ -84,31 +109,6 @@ jobs:
           channel: stable
           flutter-version: ${{ env.flutter_version }}
           cache: true
-
-      - name: Check if tags are fetched
-        run: |
-          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-          git tag -l
-
-      - name: Extract version and version code from git tag
-        id: extract_version
-        run: |
-          TAG_NAME=$(git describe --tags --abbrev=0)
-          VERSION_NAME=$(echo $TAG_NAME | sed 's/^v//')
-          VERSION_CODE=$(echo $VERSION_NAME | awk -F. '{print $1$2$3}')
-          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
-          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
-
-      - name: Update version in pubspec.yaml
-        run: |
-          sed -i '' "s/^version:.*/version: $VERSION_NAME/" ${{ env.PROJECT_NAME }}/pubspec.yaml
-          cat ${{ env.PROJECT_NAME }}/pubspec.yaml
-
-      - name: Update version code in Android's build.gradle
-        run: |
-          sed -i '' "s/versionCode [0-9]*/versionCode $VERSION_CODE/" ${{ env.PROJECT_NAME }}/android/app/build.gradle
-          sed -i '' "s/versionName \".*\"/versionName \"$VERSION_NAME\"/" ${{ env.PROJECT_NAME }}/android/app/build.gradle
-          cat ${{ env.PROJECT_NAME }}/android/app/build.gradle
 
       - name: Install dependencies
         run: cd ${{ env.PROJECT_NAME }} && flutter pub get
