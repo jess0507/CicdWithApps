@@ -109,43 +109,24 @@ jobs:
           else
             echo "No 'test' directory found. Skipping 'flutter test'"
           fi
-  
-  build-test: 
-    needs: [flutter-job]
-    if: startsWith(github.head_ref || github.ref_name, 'flutter/test')
-    runs-on: macOS-latest
-    env:
-      PROJECT_NAME: ${{ needs.flutter-job.outputs.project_name }}
-    steps:
+
       - name: Build debug apk
-        # Build Android app apk
+        if: startsWith(env.BRANCH_NAME, env.TEST_BRANCH_PRIFIX)
         run: |
             cd ${{ env.PROJECT_NAME }} && flutter build apk --debug
             echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-debug.apk" >> $GITHUB_ENV
-        
-      - uses: actions/upload-artifact@v4
-        with: 
-          name: upload android apk
-          path: ${{ env.APP_PATH }}
-
-  build-release: 
-    needs: [flutter-job]
-    if: startsWith(github.head_ref || github.ref_name, 'flutter/release')
-    runs-on: macOS-latest
-    env:
-      PROJECT_NAME: ${{ needs.flutter-job.outputs.project_name }}
-    steps:
+      
       - name: Build release apk
+        if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
         run: |
           cd ${{ env.PROJECT_NAME }} && flutter build apk --release
           echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-release.apk" >> $GITHUB_ENV
-      
+          
       - uses: actions/upload-artifact@v4
         with: 
           name: upload android apk
           path: ${{ env.APP_PATH }}
 
-      
       - name: Build release aab
         if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
         run: |
@@ -158,6 +139,7 @@ jobs:
 
       # Upload generated aab to project artifacts
       - name: Upload generated aab to the artifacts
+        if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
         uses: actions/upload-artifact@master
         with:
           name: aab-stores
@@ -165,6 +147,7 @@ jobs:
 
       # Deploy bundle to Google Play internal testing
       - name: Deploy to Play Store (Internal testing)
+        if: startsWith(env.BRANCH_NAME, env.RELEASE_BRANCH_PRIFIX)
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: ${{ env.SERVICE_ACCOUNT_PATH }}
