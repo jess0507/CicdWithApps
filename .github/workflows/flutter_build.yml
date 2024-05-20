@@ -187,6 +187,5 @@ jobs:
           packageName: ${{ env.APPLICATION_ID }}
           releaseFiles: ${{ env.AAB_PATH }}
           track: internal
-          whatsNewDirectory: distribution/whatsnew
     
           
