@@ -19,6 +19,13 @@ env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
   PROJECT_NAME: ""
   FLUTTER_PROJECT_LIST: ("curriculum" "currency_conversion" "maio_photos" "playsee_story" "meep_todo")
+  APP_PATH: ""
+
+  AAB_PATH: build/app/outputs/bundle/release/app-release.aab
+  KEYSTORE_PATH: ../kafka/upload-keystore.jks
+  KEY_PROPS_PATH: ../kafka/key.properties
+  SERVICE_ACCOUNT_PATH: ../kafka/store_credentials.json
+  PACKAGE_NAME: com.src.kafka
 
 jobs:
   flutter-build:
@@ -94,14 +101,51 @@ jobs:
           else
             echo "No 'test' directory found. Skipping 'flutter test'"
           fi
-          
-      # Build Android app apk
+  
       - name: Build debug apk
+        if: startsWith(github.head_ref, 'flutter/test')
+        # Build Android app apk
+        run: |
+            cd ${{ env.PROJECT_NAME }} && flutter build apk --debug
+            echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-debug.apk" >> $GITHUB_ENV
+        
+
+      - name: Build release apk
+        if: startsWith(github.head_ref, 'flutter/release')
         run: |
           cd ${{ env.PROJECT_NAME }} && flutter build apk
-    
+          echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-release.apk" >> $GITHUB_ENV
+      
       - uses: actions/upload-artifact@v4
         with: 
-          name: app-release.apk
-          path: ${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-release.apk
-        
+          name: upload android apk
+          path: ${{ env.APP_PATH }}
+
+      
+      - name: Build release aab
+        if: startsWith(github.head_ref, 'flutter/release')
+        run: |
+          echo "${{ secrets.KAFKA_ANDROID_KEY_STORE }}" | base64 --decode > ${{ env.KEYSTORE_PATH }}
+          echo "${{ secrets.KAFKA_ANDROID_KEY_PROPERTIES }}" | base64 --decode > ${{ env.KEY_PROPS_PATH }}
+          echo "${{ secrets.KAFKA_ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}
+          cd ${{ env.PROJECT_NAME }} && flutter build appbundle --release
+          echo "AAB_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-release.aab" >> $GITHUB_ENV
+
+
+      # Upload generated aab to project artifacts
+      - name: Upload generated aab to the artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: aab-stores
+          path: ${{ env.AAB_PATH }}
+
+      # Deploy bundle to Google Play internal testing
+      - name: Deploy to Play Store (Internal testing)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ env.SERVICE_ACCOUNT_PATH }}
+          packageName: ${{ env.PACKAGE_NAME }}
+          releaseFiles: ${{ env.AAB_PATH }}
+          track: internal
+    
+          
