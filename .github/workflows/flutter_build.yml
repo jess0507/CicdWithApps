@@ -60,8 +60,10 @@ jobs:
           
 
       - name: Project name
+        id: project_name_step
         run: |
           echo "Project name is: ${{ env.PROJECT_NAME }}"
+          echo "::set-output name=project_name::${{ env.PROJECT_NAME }}"
 
       - uses: actions/setup-java@v4
         with:
@@ -114,9 +116,15 @@ jobs:
       - name: Build debug apk
         # Build Android app apk
         run: |
+            echo "PROJECT_NAME=${{ needs.flutter-job.steps.project_name_step.outputs.project_name }}" >> $GITHUB_ENV
             cd ${{ env.PROJECT_NAME }} && flutter build apk --debug
             echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-debug.apk" >> $GITHUB_ENV
         
+      - uses: actions/upload-artifact@v4
+        with: 
+          name: upload android apk
+          path: ${{ env.APP_PATH }}
+
   build-release: 
     needs: [flutter-job]
     if: startsWith(github.head_ref || github.ref_name, 'flutter/release')
@@ -124,6 +132,7 @@ jobs:
     steps:
       - name: Build release apk
         run: |
+          echo "PROJECT_NAME=${{ needs.flutter-job.steps.project_name_step.outputs.project_name }}" >> $GITHUB_ENV
           cd ${{ env.PROJECT_NAME }} && flutter build apk
           echo "APP_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-release.apk" >> $GITHUB_ENV
       
