@@ -28,7 +28,7 @@ env:
   KEYSTORE_PATH: upload-keystore.jks
   KEY_PROPS_PATH: key.properties
   SERVICE_ACCOUNT_PATH: store_credentials.json
-  PACKAGE_NAME: com.src.kafka
+  APPLICATION_ID: com.src.kafka
 
 jobs:
   flutter-job:
@@ -110,11 +110,11 @@ jobs:
             echo "No 'test' directory found. Skipping 'flutter test'"
           fi
 
-      - name: Extract Android Package Name
+      - name: Extract Android applicationId
         run: |
-          PACKAGE_NAME=$(sed -n 's/.*package="\([^"]*\)".*/\1/p' ${{ env.PROJECT_NAME }}/android/app/src/main/AndroidManifest.xml)
-          echo "Package Name: $PACKAGE_NAME"
-          echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+          APPLICATION_ID=$(grep 'applicationId' ${{ env.PROJECT_NAME }}/android/app/build.gradle | sed 's/.*applicationId[[:space:]]*"[[:space:]]*//; s/"//g')
+          echo "Application Id: $APPLICATION_ID"
+          echo "APPLICATION_ID=$APPLICATION_ID" >> $GITHUB_ENV
 
       - name: Build debug apk
         if: startsWith(env.BRANCH_NAME, env.TEST_BRANCH_PRIFIX)
@@ -165,7 +165,7 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: ${{ env.SERVICE_ACCOUNT_PATH }}
-          packageName: ${{ env.PACKAGE_NAME }}
+          packageName: ${{ env.APPLICATION_ID }}
           releaseFiles: ${{ env.AAB_PATH }}
           track: internal
     
