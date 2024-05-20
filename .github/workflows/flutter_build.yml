@@ -153,7 +153,7 @@ jobs:
           echo "${{ secrets.KAFKA_ANDROID_KEY_PROPERTIES }}" | base64 --decode > ${{ env.KEY_PROPS_PATH }}
           echo "${{ secrets.KAFKA_ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}
           cd ${{ env.PROJECT_NAME }} && flutter build appbundle --release
-          echo "AAB_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/flutter-apk/app-release.aab" >> $GITHUB_ENV
+          echo "AAB_PATH=${{ env.PROJECT_NAME }}/build/app/outputs/bundle/release/app-release.aab" >> $GITHUB_ENV
 
 
       # Upload generated aab to project artifacts
