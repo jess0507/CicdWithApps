@@ -1,5 +1,5 @@
 ### Feature
-- Android CICD, [example](https://github.com/jess0507/mobile_app_demos/actions/runs/9159503175)
+- Flutter Android app CICD, [example](https://github.com/jess0507/mobile_app_demos/actions/runs/9159503175)
 - Flutter tests
   
 ### Projects
