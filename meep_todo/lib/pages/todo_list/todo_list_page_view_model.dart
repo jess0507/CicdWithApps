@@ -6,6 +6,8 @@ import 'package:meep_todo/model/todo.dart';
 import 'package:meep_todo/pages/todo_list/todo_list_page_view_model_state.dart';
 import 'package:rxdart/utils.dart';
 
+final counterProvider = StateProvider<int>((ref) => 0);
+
 final todoListPageViewmodel = StateNotifierProvider.autoDispose<
     TodoListPageViewmodel,
     TodoListPageViewModelState>((ref) => TodoListPageViewmodel());
@@ -27,14 +29,7 @@ class TodoListPageViewmodel extends StateNotifier<TodoListPageViewModelState> {
 
   Future<void> initTodos() async {
     List<Todo> list = _todoLocalStorage.queryAll();
-    if (list.isNotEmpty) {
-      update(list: list);
-      return;
-    }
-  }
-
-  Future<void> addTodos({required List<Todo> list}) async {
-    await _todoLocalStorage.addAll(list: list);
+    update(list: list);
   }
 
   void update({required List<Todo> list}) {
@@ -43,6 +38,10 @@ class TodoListPageViewmodel extends StateNotifier<TodoListPageViewModelState> {
 
   Future<void> addTodo(Todo newTodo) async {
     await _todoLocalStorage.add(value: newTodo);
+  }
+
+  Future<void> addTodos({required List<Todo> list}) async {
+    await _todoLocalStorage.addAll(list: list);
   }
 
   Future<void> updateTodo({
