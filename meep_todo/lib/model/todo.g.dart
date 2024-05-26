@@ -45,3 +45,28 @@ class TodoAdapter extends TypeAdapter<Todo> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Todo _$TodoFromJson(Map<String, dynamic> json) => Todo(
+      content: json['content'] as String? ?? '',
+      importance:
+          $enumDecodeNullable(_$ImportanceEnumMap, json['importance']) ??
+              Importance.none,
+      isCompleted: json['isCompleted'] as bool? ?? false,
+    );
+
+Map<String, dynamic> _$TodoToJson(Todo instance) => <String, dynamic>{
+      'content': instance.content,
+      'importance': _$ImportanceEnumMap[instance.importance]!,
+      'isCompleted': instance.isCompleted,
+    };
+
+const _$ImportanceEnumMap = {
+  Importance.none: 'none',
+  Importance.low: 'low',
+  Importance.medium: 'medium',
+  Importance.high: 'high',
+};

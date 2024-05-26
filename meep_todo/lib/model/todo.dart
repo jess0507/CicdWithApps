@@ -1,14 +1,16 @@
 import 'package:hive/hive.dart';
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'package:meep_todo/hive/config/hive_type_id.dart';
+import 'package:meep_todo/model/data_model.dart';
 
 import 'importance.dart';
 
 part 'todo.g.dart';
 
 @HiveType(typeId: HiveTypeId.todo)
-class Todo extends HiveObject {
+@JsonSerializable()
+class Todo extends HiveObject with DataModelMixin {
   @HiveField(1)
   final String content;
   @HiveField(2)
@@ -33,19 +35,8 @@ class Todo extends HiveObject {
         isCompleted: isCompleted ?? this.isCompleted,
       );
 
-  factory Todo.fromJson(String str) => Todo.fromMap(json.decode(str));
+  factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
 
-  String toJson() => json.encode(toMap());
-
-  factory Todo.fromMap(Map<String, dynamic> json) => Todo(
-        content: json["content"],
-        importance: Importance.fromString(json["importance"]),
-        isCompleted: json["isCompleted"],
-      );
-
-  Map<String, dynamic> toMap() => {
-        "content": content,
-        "importance": importance.name,
-        "isCompleted": isCompleted,
-      };
+  @override
+  Map<String, dynamic> toJson() => _$TodoToJson(this);
 }

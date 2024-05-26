@@ -1,35 +1,31 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+import '../../model/data_model.dart';
 import '../../model/todo.dart';
 
-class TodoListPageViewModelState {
+part 'todo_list_page_view_model_state.g.dart';
+
+@JsonSerializable()
+class TodoListPageViewModelState with DataModelMixin {
   final List<Todo> todos;
 
-  TodoListPageViewModelState._({
+  TodoListPageViewModelState({
     required this.todos,
   });
 
   factory TodoListPageViewModelState.empty() =>
-      TodoListPageViewModelState._(todos: const []);
+      TodoListPageViewModelState(todos: const []);
 
   TodoListPageViewModelState copyWith({
     List<Todo>? todos,
   }) =>
-      TodoListPageViewModelState._(
+      TodoListPageViewModelState(
         todos: todos ?? this.todos,
       );
 
-  factory TodoListPageViewModelState.fromJson(String str) =>
-      TodoListPageViewModelState.fromMap(json.decode(str));
+  factory TodoListPageViewModelState.fromJson(Map<String, dynamic> json) =>
+      _$TodoListPageViewModelStateFromJson(json);
 
-  String toJson() => json.encode(toMap());
-
-  factory TodoListPageViewModelState.fromMap(Map<String, dynamic> json) =>
-      TodoListPageViewModelState._(
-        todos: List<Todo>.from(json["todos"].map((x) => Todo.fromJson(x))),
-      );
-
-  Map<String, dynamic> toMap() => {
-        "todos": List<dynamic>.from(todos.map((x) => x.toJson())),
-      };
+  @override
+  Map<String, dynamic> toJson() => _$TodoListPageViewModelStateToJson(this);
 }

@@ -5,11 +5,19 @@
 2. flutter pub run build_runner build  
 3. flutter run
 
+### How to test?
+1. flutter test
+2. flutter drive \
+  --driver=test_driver/perf_driver.dart \
+  --target=integration_test/app_test.dart \
+  --profile --no-dds
+
 ### features
 1. local storage
-2. intergation test
-3. android CI
+2. widget test
+3. profile intergation test
+3. android CICD
 
 ### Demo
-https://github.com/merukoo0507/interview_homework/assets/5594453/9d827f8d-66ab-48cf-bf68-76ac9a8f0ea9
+https://github.com/jess0507/mobile_app_demos/assets/5594453/b5858f6f-e1f3-4741-994d-c486682b969d
 

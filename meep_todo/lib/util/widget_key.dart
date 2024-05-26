@@ -7,4 +7,5 @@ class WidgetKey {
   static const contentTextField = 'contentTextField';
   static const addTodoButton = 'addTodoButton';
   static const importanceChoices = 'importanceChoices';
+  static const todoList = 'todoList';
 }

@@ -21,4 +21,8 @@ enum Importance {
     return Importance.values
         .firstWhere((element) => element.name == importanceString);
   }
+
+  String importanceDisplay() {
+    return '!' * index;
+  }
 }

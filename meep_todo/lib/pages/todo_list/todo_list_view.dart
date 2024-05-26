@@ -10,11 +10,14 @@ class TodoListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final todos =
-        ref.watch(todoListPageViewmodel.select((value) => value.todos));
+    final todos = ref
+        .watch(todoListPageViewmodel.select((value) => value.todos))
+        .reversed
+        .toList();
     Fimber.d('update todos, length: ${todos.length}');
 
     return ListView.builder(
+      key: const Key(WidgetKey.todoList),
       itemCount: todos.length,
       itemBuilder: (context, index) {
         final todo = todos[index];
@@ -47,15 +50,11 @@ class TodoListView extends ConsumerWidget {
                 await ref
                     .read(todoListPageViewmodel.notifier)
                     .updateTodo(oldTodo: todo, newTodo: newTodo);
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   SnackBar(
-                //     content: isCompleteAfterPressed
-                //         ? Text('Added to favorites.')
-                //         : Text('Removed from favorites.'),
-                //     duration: const Duration(seconds: 1),
-                //   ),
-                // );
               },
+            ),
+            trailing: Text(
+              todo.importance.importanceDisplay(),
+              style: const TextStyle(color: Colors.red),
             ),
           ),
         );

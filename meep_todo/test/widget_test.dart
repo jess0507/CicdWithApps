@@ -1,57 +1,47 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:meep_todo/hive/config/config.dart';
 import 'package:meep_todo/model/importance.dart';
 import 'package:meep_todo/model/todo.dart';
 import 'package:meep_todo/pages/todo_list/todo_list_page_view_model.dart';
 import 'package:meep_todo/todo_app.dart';
 import 'package:meep_todo/util/widget_key.dart';
-
-import 'report_keys.dart';
+import 'config/hive_config.dart';
 
 const int testItemLength = 20;
 const double scrollDelta = 500;
 
 void main() {
   setUp(() async {
-    await initialHive();
+    await HiveConfig().initHive();
   });
 
-  group('Intergration test for CRUD of todo list.', () {
-    final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-    testWidgets('Test creating a todo.', (tester) async {
+  group('Widget test for CRUD of todo list.', () {
+    testWidgets('Test adding a todo.', (tester) async {
       // initial view
       final fackViewModel = await pumpAppWithViewModel(tester);
 
       // ACC
+      // add a new todo
 
       // show addTodoView
       final addTodoFloatingButton =
           find.byKey(const ValueKey(WidgetKey.addTodoFloatingButton));
+      await tester.tap(addTodoFloatingButton);
+      await tester.pumpAndSettle();
 
       const newTodoContent = 'newTodoContent';
       const newTodoImportance = Importance.high;
       final contentTextFild = find.byKey(const Key(WidgetKey.contentTextField));
+      await tester.enterText(contentTextFild, newTodoContent);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(newTodoImportance.name));
+      await tester.pumpAndSettle();
 
       final addTodoButton = find.byKey(const Key(WidgetKey.addTodoButton));
-
-      // 開始性能監測
-      await binding.traceAction(() async {
-        await tester.tap(addTodoFloatingButton);
-        await tester.pumpAndSettle();
-        await tester.enterText(contentTextFild, newTodoContent);
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.text(newTodoImportance.name));
-        await tester.pumpAndSettle();
-
-        await tester.tap(addTodoButton);
-        await tester.pumpAndSettle();
-      }, reportKey: ReportKeys.creatTodo.name);
+      await tester.tap(addTodoButton);
+      await tester.pumpAndSettle();
 
       final itemFinder =
           await findLastItem(tester: tester, viewmodel: fackViewModel);
@@ -67,72 +57,59 @@ void main() {
       // ACC
       final itemFinder =
           await findLastItem(tester: tester, viewmodel: fackViewModel);
-
-      // 開始性能監測
-      await binding.traceAction(() async {
-        await tester.drag(itemFinder, const Offset(500, 0));
-        await tester.pumpAndSettle();
-      }, reportKey: ReportKeys.removeTodo.name);
+      await tester.drag(itemFinder, const Offset(500, 0));
+      await tester.pumpAndSettle();
 
       // ASSERT
       expect(itemFinder, findsNothing);
     });
+  });
 
-    testWidgets('Test updating a todo.', (tester) async {
-      // initial view
-      final fackViewModel = await pumpAppWithViewModel(tester);
+  testWidgets('Test completing todo.', (tester) async {
+    // initial view
+    final fackViewModel = await pumpAppWithViewModel(tester);
 
-      // ACC
-      final iconFinder = await findLastItem(
-        tester: tester,
-        viewmodel: fackViewModel,
-      );
-      final lastStatus4IsCompleted =
-          ((tester.widget<IconButton>(iconFinder).icon as Icon).icon
-                  as IconData) ==
-              Icons.check_box;
+    // ACC
+    final iconFinder = await findLastItem(
+      tester: tester,
+      viewmodel: fackViewModel,
+    );
+    final lastStatus4IsCompleted =
+        ((tester.widget<IconButton>(iconFinder).icon as Icon).icon
+                as IconData) ==
+            Icons.check_box;
+    await tester.tap(iconFinder);
+    await tester.pumpAndSettle();
 
-      // 開始性能監測
-      await binding.traceAction(() async {
-        await tester.tap(iconFinder);
-        await tester.pumpAndSettle();
-      }, reportKey: ReportKeys.updateTodo.name);
+    // ASSERT
+    final newStatus4IsCompleted =
+        ((tester.widget<IconButton>(iconFinder).icon as Icon).icon
+                as IconData) ==
+            Icons.check_box;
+    expect(lastStatus4IsCompleted, !newStatus4IsCompleted);
+  });
 
-      // ASSERT
-      final newStatus4IsCompleted =
-          ((tester.widget<IconButton>(iconFinder).icon as Icon).icon
-                  as IconData) ==
-              Icons.check_box;
-      expect(lastStatus4IsCompleted, !newStatus4IsCompleted);
-    });
+  testWidgets('Test Finding the first item in the list', (tester) async {
+    // initial view
+    final fakeViewModel = await pumpAppWithViewModel(tester);
 
-    testWidgets('Test reading the first item in the list', (tester) async {
-      // initial view
-      final fakeViewModel = await pumpAppWithViewModel(tester);
+    // ACC
+    const testIndex = 0;
+    final itemFinder = await findIndexedKeyItem(
+      tester: tester,
+      viewmodel: fakeViewModel,
+      index: testIndex,
+      prefixKey: WidgetKey.todoListItemPrefix,
+    );
+    await tester.scrollUntilVisible(itemFinder, scrollDelta);
 
-      // ACC
-      const testIndex = 0;
-      final itemFinder = await findIndexedKeyItem(
-        tester: tester,
-        viewmodel: fakeViewModel,
-        index: testIndex,
-        prefixKey: WidgetKey.todoListItemPrefix,
-      );
-
-      // 開始性能監測
-      await binding.traceAction(() async {
-        await tester.scrollUntilVisible(itemFinder, scrollDelta);
-      }, reportKey: ReportKeys.readTodo.name);
-
-      // ASSERT
-      expect(itemFinder, findsOneWidget);
-      final content =
-          ((tester.widget<Dismissible>(itemFinder).child as ListTile).title
-                  as Text)
-              .data;
-      final todo = fakeViewModel.state.todos[testIndex];
-      expect(content, todo.content);
-    });
+    // ASSERT
+    expect(itemFinder, findsOneWidget);
+    final content = ((tester.widget<Dismissible>(itemFinder).child as ListTile)
+            .title as Text)
+        .data;
+    final todo = fakeViewModel.state.todos[testIndex];
+    expect(content, todo.content);
   });
 }
 
@@ -179,10 +156,10 @@ Future<Finder> findIndexedKeyItem({
   final todo = viewmodel.state.todos[index];
   final keyString = '$prefixKey${todo.key}';
 
-  final log = {'name': 'findIndexedKeyItem', 'index': index, 'key': keyString};
-  if (kDebugMode) {
-    print(log);
-  }
+  // final log = {'name': 'findIndexedKeyItem', 'index': index, 'key': keyString};
+  // if (kDebugMode) {
+  //   print(log);
+  // }
 
   final todoKey = Key(keyString);
   return find.byKey(todoKey);
