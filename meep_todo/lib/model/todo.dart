@@ -2,13 +2,14 @@ import 'package:hive/hive.dart';
 import 'dart:convert';
 
 import 'package:meep_todo/hive/config/hive_type_id.dart';
+import 'package:meep_todo/model/data_model.dart';
 
 import 'importance.dart';
 
 part 'todo.g.dart';
 
 @HiveType(typeId: HiveTypeId.todo)
-class Todo extends HiveObject {
+class Todo extends HiveObject with DataModelMixin {
   @HiveField(1)
   final String content;
   @HiveField(2)
@@ -35,6 +36,7 @@ class Todo extends HiveObject {
 
   factory Todo.fromJson(String str) => Todo.fromMap(json.decode(str));
 
+  @override
   String toJson() => json.encode(toMap());
 
   factory Todo.fromMap(Map<String, dynamic> json) => Todo(
@@ -43,6 +45,7 @@ class Todo extends HiveObject {
         isCompleted: json["isCompleted"],
       );
 
+  @override
   Map<String, dynamic> toMap() => {
         "content": content,
         "importance": importance.name,

@@ -7,7 +7,7 @@ import 'package:meep_todo/model/todo.dart';
 import 'package:meep_todo/pages/todo_list/todo_list_page_view_model.dart';
 import 'package:meep_todo/todo_app.dart';
 import 'package:meep_todo/util/widget_key.dart';
-import 'hive_config.dart';
+import 'config/hive_config.dart';
 
 const int testItemLength = 20;
 const double scrollDelta = 500;
@@ -16,40 +16,41 @@ void main() {
   setUp(() async {
     await HiveConfig().initHive();
   });
-  testWidgets('Test adding a todo.', (tester) async {
-    // initial view
-    final fackViewModel = await pumpAppWithViewModel(tester);
-
-    // ACC
-    // add a new todo
-
-    // show addTodoView
-    final addTodoFloatingButton =
-        find.byKey(const ValueKey(WidgetKey.addTodoFloatingButton));
-    await tester.tap(addTodoFloatingButton);
-    await tester.pumpAndSettle();
-
-    const newTodoContent = 'newTodoContent';
-    const newTodoImportance = Importance.high;
-    final contentTextFild = find.byKey(const Key(WidgetKey.contentTextField));
-    await tester.enterText(contentTextFild, newTodoContent);
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text(newTodoImportance.name));
-    await tester.pumpAndSettle();
-
-    final addTodoButton = find.byKey(const Key(WidgetKey.addTodoButton));
-    await tester.tap(addTodoButton);
-    await tester.pumpAndSettle();
-
-    final itemFinder =
-        await findLastItem(tester: tester, viewmodel: fackViewModel);
-
-    // ASSERT
-    expect(itemFinder, findsOneWidget);
-  });
 
   group('Widget test for CRUD of todo list.', () {
+    testWidgets('Test adding a todo.', (tester) async {
+      // initial view
+      final fackViewModel = await pumpAppWithViewModel(tester);
+
+      // ACC
+      // add a new todo
+
+      // show addTodoView
+      final addTodoFloatingButton =
+          find.byKey(const ValueKey(WidgetKey.addTodoFloatingButton));
+      await tester.tap(addTodoFloatingButton);
+      await tester.pumpAndSettle();
+
+      const newTodoContent = 'newTodoContent';
+      const newTodoImportance = Importance.high;
+      final contentTextFild = find.byKey(const Key(WidgetKey.contentTextField));
+      await tester.enterText(contentTextFild, newTodoContent);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(newTodoImportance.name));
+      await tester.pumpAndSettle();
+
+      final addTodoButton = find.byKey(const Key(WidgetKey.addTodoButton));
+      await tester.tap(addTodoButton);
+      await tester.pumpAndSettle();
+
+      final itemFinder =
+          await findLastItem(tester: tester, viewmodel: fackViewModel);
+
+      // ASSERT
+      expect(itemFinder, findsOneWidget);
+    });
+
     testWidgets('Testing removing a todo.', (tester) async {
       // initial view
       final fackViewModel = await pumpAppWithViewModel(tester);
@@ -156,10 +157,10 @@ Future<Finder> findIndexedKeyItem({
   final todo = viewmodel.state.todos[index];
   final keyString = '$prefixKey${todo.key}';
 
-  final log = {'name': 'findIndexedKeyItem', 'index': index, 'key': keyString};
-  if (kDebugMode) {
-    print(log);
-  }
+  // final log = {'name': 'findIndexedKeyItem', 'index': index, 'key': keyString};
+  // if (kDebugMode) {
+  //   print(log);
+  // }
 
   final todoKey = Key(keyString);
   return find.byKey(todoKey);

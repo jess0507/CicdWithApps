@@ -1,35 +1,37 @@
 import 'dart:convert';
 
+import '../../model/data_model.dart';
 import '../../model/todo.dart';
 
-class AddTodoViewModelState {
+class AddTodoViewModelState with DataModelMixin {
   final Todo todo;
 
-  AddTodoViewModelState._({
+  AddTodoViewModelState({
     required this.todo,
   });
 
-  factory AddTodoViewModelState.empty() =>
-      AddTodoViewModelState._(todo: Todo());
+  factory AddTodoViewModelState.empty() => AddTodoViewModelState(todo: Todo());
 
   AddTodoViewModelState copyWith({
     Todo? todo,
   }) =>
-      AddTodoViewModelState._(
+      AddTodoViewModelState(
         todo: todo ?? this.todo,
       );
 
   factory AddTodoViewModelState.fromJson(String str) =>
       AddTodoViewModelState.fromMap(json.decode(str));
 
+  @override
   String toJson() => json.encode(toMap());
 
   factory AddTodoViewModelState.fromMap(Map<String, dynamic> json) =>
-      AddTodoViewModelState._(
-        todo: Todo.fromJson(json["todo"]),
+      AddTodoViewModelState(
+        todo: Todo.fromMap(json["todo"]),
       );
 
+  @override
   Map<String, dynamic> toMap() => {
-        "todo": todo.toJson(),
+        "todo": todo.toMap(),
       };
 }
