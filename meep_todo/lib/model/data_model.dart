@@ -1,4 +1,3 @@
 mixin DataModelMixin {
-  String toJson();
-  Map<String, dynamic> toMap();
+  Map<String, dynamic> toJson();
 }

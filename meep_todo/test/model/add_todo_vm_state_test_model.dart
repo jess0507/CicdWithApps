@@ -23,5 +23,5 @@ class AddTodoVMStateTestModel extends JsonTestModel<AddTodoViewModelState> {
   }
 
   @override
-  fromJson(String json) => AddTodoViewModelState.fromJson(json);
+  fromJson(Map<String, dynamic> json) => AddTodoViewModelState.fromJson(json);
 }

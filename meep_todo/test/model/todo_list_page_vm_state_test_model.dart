@@ -29,5 +29,6 @@ class TodoListPageVMStateTestModel
   }
 
   @override
-  fromJson(String json) => TodoListPageViewModelState.fromJson(json);
+  fromJson(Map<String, dynamic> json) =>
+      TodoListPageViewModelState.fromJson(json);
 }

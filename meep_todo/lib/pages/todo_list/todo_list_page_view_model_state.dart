@@ -1,8 +1,11 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
 import '../../model/data_model.dart';
 import '../../model/todo.dart';
 
+part 'todo_list_page_view_model_state.g.dart';
+
+@JsonSerializable()
 class TodoListPageViewModelState with DataModelMixin {
   final List<Todo> todos;
 
@@ -20,19 +23,9 @@ class TodoListPageViewModelState with DataModelMixin {
         todos: todos ?? this.todos,
       );
 
-  factory TodoListPageViewModelState.fromJson(String str) =>
-      TodoListPageViewModelState.fromMap(json.decode(str));
+  factory TodoListPageViewModelState.fromJson(Map<String, dynamic> json) =>
+      _$TodoListPageViewModelStateFromJson(json);
 
   @override
-  String toJson() => json.encode(toMap());
-
-  factory TodoListPageViewModelState.fromMap(Map<String, dynamic> json) =>
-      TodoListPageViewModelState(
-        todos: List<Todo>.from(json["todos"].map((x) => Todo.fromMap(x))),
-      );
-
-  @override
-  Map<String, dynamic> toMap() => {
-        "todos": List<dynamic>.from(todos.map((x) => x.toMap())),
-      };
+  Map<String, dynamic> toJson() => _$TodoListPageViewModelStateToJson(this);
 }

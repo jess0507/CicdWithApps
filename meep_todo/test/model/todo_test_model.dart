@@ -19,5 +19,5 @@ class TodoTestModel extends JsonTestModel<Todo> {
   }
 
   @override
-  fromJson(String trainString) => Todo.fromJson(trainString);
+  fromJson(Map<String, dynamic> json) => Todo.fromJson(json);
 }
