@@ -1,35 +1,29 @@
-import 'dart:convert';
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:maio_photos/model/db/entity/photo.dart';
 
+part 'gallery_page_view_model_state.g.dart';
+
+@JsonSerializable()
 class GalleryPageViewModelState {
   final List<Photo> photos;
 
-  GalleryPageViewModelState._({
+  GalleryPageViewModelState({
     required this.photos,
   });
 
   factory GalleryPageViewModelState.empty() =>
-      GalleryPageViewModelState._(photos: const []);
+      GalleryPageViewModelState(photos: const []);
 
   GalleryPageViewModelState copyWith({
     List<Photo>? photos,
   }) =>
-      GalleryPageViewModelState._(
+      GalleryPageViewModelState(
         photos: photos ?? this.photos,
       );
 
-  factory GalleryPageViewModelState.fromJson(String str) =>
-      GalleryPageViewModelState.fromMap(json.decode(str));
-
-  String toJson() => json.encode(toMap());
+  Map<String, dynamic> toMap(GalleryPageViewModelState instance) =>
+      _$GalleryPageViewModelStateToJson(instance);
 
   factory GalleryPageViewModelState.fromMap(Map<String, dynamic> json) =>
-      GalleryPageViewModelState._(
-        photos: List<Photo>.from(json["photos"].map((x) => Photo.fromJson(x))),
-      );
-
-  Map<String, dynamic> toMap() => {
-        "photos": List<dynamic>.from(photos.map((x) => x.toJson())),
-      };
+      _$GalleryPageViewModelStateFromJson(json);
 }

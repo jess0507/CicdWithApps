@@ -15,6 +15,20 @@ class HiveLocalStorage<T> {
     Fimber.d(json);
   }
 
+  Future<void> updateAllWithId({required List<T> list}) async {
+    final Map<int, T> map = {
+      for (var element in list)
+        if ((element as Map)['id'] != null) (element as Map)['id']: element
+    };
+    await box.putAll(map);
+    final json = {
+      'boxName': boxName,
+      'event': 'updateAllWithId',
+      'size': map.length
+    }.toString();
+    Fimber.d(json);
+  }
+
   Future<void> updateAll({required Map<int, T> entries}) async {
     await box.putAll(entries);
     final json = {

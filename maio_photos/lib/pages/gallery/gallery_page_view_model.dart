@@ -5,7 +5,6 @@ import 'package:maio_photos/model/db/entity/photo.dart';
 import 'package:maio_photos/model/request/get_photos_request.dart';
 import 'package:fimber/fimber.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:rxdart/utils.dart';
 
 import 'gallery_page_view_model_state.dart';
 
@@ -14,17 +13,22 @@ final galleryPageViewmodel = StateNotifierProvider.autoDispose<
     GalleryPageViewModelState>((ref) => GalleryPageViewmodel());
 
 class GalleryPageViewmodel extends StateNotifier<GalleryPageViewModelState> {
-  final CompositeSubscription _subscription = CompositeSubscription();
+  final PhotoHiveLocalStorage _photoStorage;
 
-  GalleryPageViewmodel.empty() : super(GalleryPageViewModelState.empty());
+  GalleryPageViewmodel.test({
+    PhotoHiveLocalStorage? photoStorage,
+  })  : _photoStorage = photoStorage ?? PhotoHiveLocalStorage(),
+        super(GalleryPageViewModelState.empty());
 
-  GalleryPageViewmodel() : super(GalleryPageViewModelState.empty()) {
+  GalleryPageViewmodel()
+      : _photoStorage = PhotoHiveLocalStorage(),
+        super(GalleryPageViewModelState.empty()) {
     initPhotos();
     fetchPhotos();
   }
 
   void initPhotos() {
-    final list = PhotoHiveLocalStorage().queryAll();
+    final list = _photoStorage.queryAll();
     update(list: list);
   }
 
@@ -34,11 +38,7 @@ class GalleryPageViewmodel extends StateNotifier<GalleryPageViewModelState> {
       final List<Photo> list = res.deserializedData;
       Fimber.d('fetchPhotos: ${list.length}');
       update(list: list);
-      final Map<int, Photo> map = {
-        for (var element in list)
-          if (element.id != null) element.id!: element
-      };
-      PhotoHiveLocalStorage().updateAll(entries: map);
+      _photoStorage.updateAllWithId(list: list);
     } catch (e) {
       Fimber.d('Error to fetchPhotos, e: $e');
     }
@@ -46,11 +46,5 @@ class GalleryPageViewmodel extends StateNotifier<GalleryPageViewModelState> {
 
   void update({required List<Photo> list}) {
     state = state.copyWith(photos: list);
-  }
-
-  @override
-  void dispose() {
-    _subscription.dispose();
-    super.dispose();
   }
 }
