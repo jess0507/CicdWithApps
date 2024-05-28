@@ -13,7 +13,7 @@ import '../json/photos.dart';
 
 Future<void> testGalleryPage(WidgetTester tester) async {
   // 創建一個假的 ViewModel 以提供照片
-  final viewModel = GalleryPageViewmodel.test();
+  final viewModel = GalleryPageViewmodel();
   List<Photo> list =
       photosMap.map<Photo>((json) => Photo.fromJson(json)).toList();
   viewModel.update(list: list);

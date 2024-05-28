@@ -1,155 +1,85 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive/hive.dart';
-import 'package:maio_photos/hive/config/box_name.dart';
 import 'package:maio_photos/hive/repository/photo_hive_local_storage.dart';
 import 'package:maio_photos/model/db/entity/photo.dart';
-import 'package:maio_photos/model/request/api_request.dart';
 import 'package:maio_photos/model/request/get_photos_request.dart';
 import 'package:maio_photos/model/response/http_response.dart';
 import 'package:maio_photos/pages/gallery/gallery_page_view_model.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
-final photos = [Photo(id: 1), Photo(id: 2)];
+import '../config/hive_config.dart';
+import '../json/photos.dart';
+import 'test_gallery_page_viewmodel.mocks.dart';
 
-class MockPhotoHiveLocalStorage implements PhotoHiveLocalStorage {
-  @override
-  List<Photo> queryAll() => photos;
-
-  @override
-  // TODO: implement box
-  Box get box => throw UnimplementedError();
-
-  @override
-  // TODO: implement boxName
-  BoxName get boxName => throw UnimplementedError();
-
-  @override
-  Future<void> delete({required int key}) {
-    // TODO: implement delete
-    throw UnimplementedError();
-  }
-
-  @override
-  // TODO: implement name
-  String get name => throw UnimplementedError();
-
-  @override
-  Future<Photo> query({required int key}) {
-    // TODO: implement query
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> update({required int key, required Photo value}) {
-    // TODO: implement update
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> updateAll({required Map<int, Photo> entries}) {
-    // TODO: implement updateAll
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> updateAllWithId({required List<Photo> list}) {
-    // TODO: implement updateAllWithId
-    throw UnimplementedError();
-  }
-
-  @override
-  Stream<List<Photo>> watchList() {
-    // TODO: implement watchList
-    throw UnimplementedError();
-  }
-}
-
-class MockGetPhotosRequest implements GetPhotosRequest {
-  @override
-  dynamic data;
-
-  @override
-  Map<String, dynamic>? headers;
-
-  @override
-  String method = '';
-
-  @override
-  Map<String, dynamic>? parameters;
-
-  @override
-  String path = '';
-
-  @override
-  List<Photo> deserialize(Response response) {
-    // TODO: implement deserialize
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<HttpResponse> request() {
-    // TODO: implement request
-    throw UnimplementedError();
-  }
-
-  @override
-  // TODO: implement requestOptions
-  RequestOptions get requestOptions => throw UnimplementedError();
-
-  @override
-  ApiRequest toApiRequest() {
-    // TODO: implement toApiRequest
-    throw UnimplementedError();
-  }
-}
-
+@GenerateMocks([
+  PhotoHiveLocalStorage,
+  GetPhotosRequest,
+])
 void testGalleryPageViewmodel() {
   late MockPhotoHiveLocalStorage mockPhotoHiveLocalStorage;
-  // late MockGetPhotosRequest mockGetPhotosRequest;
+  late MockGetPhotosRequest mockGetPhotosRequest;
+  late Response mockResponse;
+  late HttpResponse mockHttpResponse;
+  late List<Photo> photos;
 
-  setUp(() {
+  setUp(() async {
+    await HiveConfig().initHive();
+
+    if (kDebugMode) {
+      print('Setup mockPhotoHiveLocalStorage, mockGetPhotosRequest');
+    }
     mockPhotoHiveLocalStorage = MockPhotoHiveLocalStorage();
-    // mockGetPhotosRequest = MockGetPhotosRequest();
-    // Ensure queryAll() returns a non-null list
-    // when(mockPhotoHiveLocalStorage.queryAll()).thenReturn([]);
+    mockGetPhotosRequest = MockGetPhotosRequest();
+    when(mockPhotoHiveLocalStorage.queryAll()).thenReturn([]);
+
+    photos = List<Photo>.from(photosMap.map((item) => Photo.fromJson(item)));
+
+    mockResponse = Response(requestOptions: RequestOptions(data: photosMap));
+    mockHttpResponse = HttpResponse(
+      response: mockResponse,
+      deserializedData: photos,
+    );
   });
 
   test('initPhotos should update state with local photos', () async {
     final viewModel =
         GalleryPageViewmodel.test(photoStorage: mockPhotoHiveLocalStorage);
-    viewModel.initPhotos();
-
-    expect(viewModel.state.photos, equals(photos));
+    viewModel.initPhotosFromStorage();
+    expect(viewModel.state.photos, equals([]));
+    verify(mockPhotoHiveLocalStorage.queryAll()).called(1);
   });
 
-  // test('fetchPhotos should update state with fetched photos', () async {
-  //   final photos = [Photo(id: 1), Photo(id: 2)];
-  //   when(mockGetPhotosRequest.request()).thenAnswer((_) async => HttpResponse(
-  //       response: Response(requestOptions: RequestOptions()),
-  //       deserializedData: photos));
+  test('fetchPhotos should update state with fetched photos', () async {
+    when(mockGetPhotosRequest.request()).thenAnswer(
+      (_) async => mockHttpResponse,
+    );
 
-  //   final viewModel = GalleryPageViewmodel.empty();
-  //   await viewModel.fetchPhotos();
+    final viewModel = GalleryPageViewmodel.test(
+      photoStorage: mockPhotoHiveLocalStorage,
+      getPhotosRequest: mockGetPhotosRequest,
+    );
+    await viewModel.fetchPhotos();
 
-  //   expect(viewModel.state.photos, equals(photos));
-  //   verify(mockPhotoHiveLocalStorage.updateAllWithId(list: photos)).called(1);
-  // });
+    expect(viewModel.state.photos, photos);
+    verify(mockPhotoHiveLocalStorage.updateAllWithId(
+      list: photos,
+    )).called(1);
+  });
 
-  // test(
-  //     'GalleryPageViewmodel constructor should call initPhotos and fetchPhotos',
-  //     () async {
-  //   final photos = [Photo(id: 1), Photo(id: 2)];
-  //   final fetchedPhotos = [Photo(id: 3), Photo(id: 4)];
+  test(
+      'GalleryPageViewmodel constructor should call initPhotos and fetchPhotos',
+      () async {
+    when(mockPhotoHiveLocalStorage.queryAll()).thenReturn(photos);
+    when(mockGetPhotosRequest.request())
+        .thenAnswer((_) async => mockHttpResponse);
 
-  //   when(mockPhotoHiveLocalStorage.queryAll()).thenReturn(photos);
-  //   when(mockGetPhotosRequest.request()).thenAnswer((_) async => HttpResponse(
-  //       response: Response(requestOptions: RequestOptions()),
-  //       deserializedData: photos));
-
-  //   final viewModel = GalleryPageViewmodel();
-  //   await Future.delayed(
-  //       Duration.zero); // Wait for async operations to complete
-
-  //   expect(viewModel.state.photos, equals(fetchedPhotos));
-  // });
+    final viewModel = GalleryPageViewmodel.test(
+      photoStorage: mockPhotoHiveLocalStorage,
+      getPhotosRequest: mockGetPhotosRequest,
+    );
+    await viewModel.init();
+    expect(viewModel.state.photos, equals(photos));
+  });
 }
