@@ -1,19 +1,11 @@
-import 'package:flutter_test/flutter_test.dart';
+import 'http_tests/test_get_photos_request.dart';
+import 'unit_tests/test_gallery_page_viewmodel.dart';
+import 'unit_tests/test_photo.dart';
+import 'widget_tests/test_widget.dart';
 
-import 'hive_config.dart';
-import 'test_first_page_2_gallery_page.dart';
-import 'test_gallery_page.dart';
-import 'test_photos.dart';
-
-void main() {
-  setUp(() async {
-    await HiveConfig().initHive();
-  });
-
-  group('Photo.fromMap', testPhotoFromMap);
-
-  testWidgets(
-      'GalleryPage Test', (WidgetTester tester) => testGalleryPage(tester));
-  testWidgets('TestNavigation from FirstPage to GalleryPage',
-      (WidgetTester tester) => testFirstPage2GalleryPage(tester));
+Future<void> main() async {
+  await getPhotosRequestTest();
+  testPhoto();
+  testGalleryPageViewmodel();
+  testWidget();
 }

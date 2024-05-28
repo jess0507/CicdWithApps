@@ -1,11 +1,12 @@
 import 'package:hive/hive.dart';
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
 import 'package:maio_photos/hive/config/hive_type_id.dart';
 
 part 'photo.g.dart';
 
 @HiveType(typeId: HiveTypeId.photo)
+@JsonSerializable()
 class Photo extends HiveObject {
   @HiveField(1)
   final int? albumId;
@@ -43,23 +44,7 @@ class Photo extends HiveObject {
         thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
       );
 
-  factory Photo.fromJson(String str) => Photo.fromMap(json.decode(str));
+  Map<String, dynamic> toJson() => _$PhotoToJson(this);
 
-  String toJson() => json.encode(toMap());
-
-  factory Photo.fromMap(Map<String, dynamic> json) => Photo(
-        albumId: json["albumId"],
-        id: json["id"],
-        title: json["title"],
-        url: json["url"],
-        thumbnailUrl: json["thumbnailUrl"],
-      );
-
-  Map<String, dynamic> toMap() => {
-        "albumId": albumId,
-        "id": id,
-        "title": title,
-        "url": url,
-        "thumbnailUrl": thumbnailUrl,
-      };
+  factory Photo.fromJson(Map<String, dynamic> json) => _$PhotoFromJson(json);
 }
