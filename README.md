@@ -4,16 +4,15 @@
   
 ### Projects
 - Flutter 
-    1. [meep_todo](https://github.com/merukoo0507/interview_homework/tree/flutter/test/meep_todo/meep_todo)
-        - storage
-        - intergation test
+    1. - unit test
+       - intergation test
+       - storage 
+       [meep_todo](https://github.com/merukoo0507/interview_homework/tree/flutter/test/meep_todo/meep_todo)
+       [maio_photos](https://github.com/merukoo0507/interview_homework/tree/develop/maio_photos)
 
-    2. [playsee_story](https://github.com/merukoo0507/interview_homework/tree/develop/playsee_story)
-        - video player
-
-    3. [maio_photos](https://github.com/merukoo0507/interview_homework/tree/develop/maio_photos)
-        - storage 
-        - unit test, with pull request [check](https://github.com/merukoo0507/interview_homework/pull/12)
+    2. video player
+       - [playsee_story](https://github.com/merukoo0507/interview_homework/tree/develop/playsee_story)
+  
 
     4. [currency_conversion](https://github.com/merukoo0507/interview_homework/tree/develop/currency_conversion)
     5. [curriculum](https://github.com/merukoo0507/interview_homework/tree/develop/curriculum)
