@@ -5,9 +5,11 @@ https://github.com/merukoo0507/interview_homework/assets/5594453/b978107f-27ff-4
 
 ### Technicals
 1. http request for restful api
-2. local storage
-3. unit test
-4. widget test
+2. retry machanism for http request
+3. isolate compute
+4. hive db
+5. unit test
+6. widget test
 
 ### How to run?
 1. flutter pub get
