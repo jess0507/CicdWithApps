@@ -3,7 +3,7 @@
 ### Demo
 https://github.com/jess0507/mobile_app_demos/assets/5594453/b5858f6f-e1f3-4741-994d-c486682b969d
 
-### Technicals
+### Technologies
 1. hive db
 2. unit test
 3. widget test
