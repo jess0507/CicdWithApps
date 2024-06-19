@@ -26,7 +26,7 @@
        - network data
        <video src="https://github.com/merukoo0507/interview_homework/assets/5594453/6b2e140e-fd8f-411b-b4ee-f43c5c50c138" />
     
-### Feature
+### Technologies
 - Flutter Android app CICD
   ![Flutter app CICD with github action flow](https://github.com/jess0507/CicdWithApps/assets/5594453/54bd8196-f258-4614-a247-7baf53342cc5)
 
