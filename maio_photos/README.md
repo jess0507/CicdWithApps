@@ -10,6 +10,7 @@ https://github.com/merukoo0507/interview_homework/assets/5594453/b978107f-27ff-4
 4. hive db
 5. unit test
 6. widget test
+7. cicd for android app
 
 ### How to run?
 1. flutter pub get
