@@ -43,7 +43,7 @@ void testGalleryPageViewmodel() {
     );
   });
 
-  test('initPhotos should update state with local photos', () async {
+  test('Init photos should update state with local photos', () async {
     final viewModel =
         GalleryPageViewmodel.test(photoStorage: mockPhotoHiveLocalStorage);
     viewModel.initPhotosFromStorage();
@@ -51,7 +51,7 @@ void testGalleryPageViewmodel() {
     verify(mockPhotoHiveLocalStorage.queryAll()).called(1);
   });
 
-  test('fetchPhotos should update state with fetched photos', () async {
+  test('Fetch photos should update state with fetched photos', () async {
     when(mockGetPhotosRequest.request()).thenAnswer(
       (_) async => mockHttpResponse,
     );
