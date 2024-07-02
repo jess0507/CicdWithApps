@@ -46,7 +46,9 @@ class GalleryPageViewmodel extends StateNotifier<GalleryPageViewModelState> {
       final List<Photo> list = res.deserializedData;
       update(list: list);
 
-      _photoStorage.updateAllWithId(list: list);
+      Map<int, Photo> map = Map.fromEntries(
+          list.where((e) => e.id != null).map((e) => MapEntry(e.id!, e)));
+      _photoStorage.updateAll(entries: map);
     } catch (e) {
       Fimber.d('Error to fetchPhotos, e: $e');
     }

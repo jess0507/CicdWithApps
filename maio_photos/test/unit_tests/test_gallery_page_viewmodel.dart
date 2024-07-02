@@ -63,9 +63,10 @@ void testGalleryPageViewmodel() {
     await viewModel.fetchPhotos();
 
     expect(viewModel.state.photos, photos);
-    verify(mockPhotoHiveLocalStorage.updateAllWithId(
-      list: photos,
-    )).called(1);
+
+    Map<int, Photo> map = Map.fromEntries(
+        photos.where((e) => e.id != null).map((e) => MapEntry(e.id!, e)));
+    verify(mockPhotoHiveLocalStorage.updateAll(entries: map)).called(1);
   });
 
   test(
