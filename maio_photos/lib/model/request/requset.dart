@@ -41,7 +41,7 @@ abstract class Request<T> {
         Map.of({'event': 'request', 'request': request.toString()});
     Fimber.e(requestLog.toString());
     final response = await ApiService().request(request);
-    final deserializeData = compute(deserialize, response);
+    final deserializeData = await compute(deserialize, response);
     HttpResponse httpResponse;
     try {
       httpResponse = HttpResponse(
