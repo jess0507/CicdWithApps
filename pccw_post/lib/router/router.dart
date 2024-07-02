@@ -1,6 +1,6 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pccw_post/pages/first/second_page.dart';
-import 'package:pccw_post/pages/gallery/gallery_page.dart';
+import 'package:pccw_post/pages/second/second_page.dart';
 
 import '../pages/first/first_page.dart';
 
@@ -10,15 +10,14 @@ extension RouterNameExtension on String {
 
 GoRouter router() {
   return GoRouter(
+    observers: [
+      BotToastNavigatorObserver(),
+    ],
     routes: [
       GoRoute(
         path: FirstPage.routeName,
         builder: (context, state) => const FirstPage(),
         routes: [
-          GoRoute(
-            path: GalleryPage.routeName,
-            builder: (context, state) => const GalleryPage(),
-          ),
           GoRoute(
             path: SecondPage.routeName,
             builder: (context, state) => const SecondPage(),

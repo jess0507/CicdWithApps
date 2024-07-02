@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "181190843418",
+    "project_id": "kafka-423811",
+    "storage_bucket": "kafka-423811.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181190843418:android:e1d220729c1e84fb1785a3",
+        "android_client_info": {
+          "package_name": "com.example.pccw_post"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPZsmGU7YNMNfd2sqBDn81CKege8Wpp4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,1 +1,0 @@
-enum CacheControl { forceNetwork, forceCache }
