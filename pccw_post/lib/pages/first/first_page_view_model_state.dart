@@ -1,7 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-@JsonSerializable()
 class FirstPageViewModelState {
   final String filePath;
   final List<AssetEntity> mediaList;
