@@ -1,10 +1,11 @@
 # pccw_post
 
 ### Demo
+![](demo.gif)
 
 ### Technologies
 1. http request for restful api
-2. 
+2. upload heic
 7. cicd for android app
 
 ### How to run?
