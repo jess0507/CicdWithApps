@@ -21,25 +21,32 @@ class FirstPage extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          Consumer(
-            builder: (context, ref, child) {
-              final path = ref
-                  .watch(firstPageViewmodel.select((value) => value.filePath));
-              return Column(
-                children: [
-                  path.isNullOrEmpty()
+          Column(
+            children: [
+              Consumer(
+                builder: (context, ref, child) {
+                  final path = ref.watch(
+                      firstPageViewmodel.select((value) => value.filePath));
+                  return path.isNullOrEmpty()
                       ? const Text('No image selected.')
-                      : Image.file(
-                          File(path),
-                          width: double.infinity,
-                          height: 100,
-                        ),
-                  Text(path),
+                      : Column(
+                          children: [
+                            Image.file(
+                              File(path),
+                              width: double.infinity,
+                              height: 100,
+                            ),
+                            Text('File: $path'),
+                          ],
+                        );
+                },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
                   ElevatedButton(
                     onPressed: () {
-                      ref
-                          .read(firstPageViewmodel.notifier)
-                          .update(path: '', selectedIndex: null);
+                      ref.read(firstPageViewmodel.notifier).clear();
                     },
                     child: const Text('Clear Image'),
                   ),
@@ -49,9 +56,32 @@ class FirstPage extends ConsumerWidget {
                     },
                     child: const Text('Upload Image'),
                   ),
+                  ElevatedButton(
+                    onPressed: () {
+                      ref.read(firstPageViewmodel.notifier).loadImages();
+                    },
+                    child: const Text('Reload'),
+                  ),
                 ],
-              );
-            },
+              ),
+              // Consumer(
+              //   builder: (context, ref, child) {
+              //     final link = ref
+              //         .watch(firstPageViewmodel.select((value) => value.link));
+              //     return link.isNullOrEmpty()
+              //         ? const SizedBox.shrink()
+              //         : InkWell(
+              //             onTap: () async {
+              //               final result = await launchUrl(Uri.parse(link));
+              //               if (!result) {
+              //                 BotToast.showText(text: 'Unable to open link.');
+              //               }
+              //             },
+              //             child: Text('Open Link: $link'),
+              //           );
+              //   },
+              // ),
+            ],
           ),
           Consumer(
             builder: (context, ref, child) {

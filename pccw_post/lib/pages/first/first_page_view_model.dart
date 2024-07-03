@@ -79,12 +79,21 @@ class FirstPageViewmodel extends StateNotifier<FirstPageViewModelState> {
     update(mediaList: mediaList);
   }
 
+  Future clear() async {
+    update(
+      selectedIndex: null,
+      path: '',
+      link: '',
+    );
+  }
+
   Future select({required int index}) async {
     final file = await state.mediaList[index].originFile;
     Fimber.d('selectImage: ${file?.path}');
     update(
       selectedIndex: index,
       path: file?.path,
+      link: '',
     );
   }
 
@@ -110,6 +119,7 @@ class FirstPageViewmodel extends StateNotifier<FirstPageViewModelState> {
         await ref.putFile(file);
 
         final downloadUrl = await ref.getDownloadURL();
+        update(link: downloadUrl);
         Fimber.d('File uploaded. Download URL: $downloadUrl');
 
         if (!mounted) {
@@ -125,11 +135,13 @@ class FirstPageViewmodel extends StateNotifier<FirstPageViewModelState> {
 
   void update({
     String? path,
+    String? link,
     int? selectedIndex,
     List<AssetEntity>? mediaList,
   }) {
     state = state.copyWith(
       filePath: path,
+      link: link,
       selectedIndex: selectedIndex,
       mediaList: mediaList,
     );
