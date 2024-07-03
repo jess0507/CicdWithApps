@@ -18,7 +18,7 @@ env:
   flutter_version: 3.19.6
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
   PROJECT_NAME: ""
-  FLUTTER_PROJECT_LIST: ("curriculum" "currency_conversion" "maio_photos" "playsee_story" "meep_todo")
+  FLUTTER_PROJECT_LIST: ("curriculum" "currency_conversion" "maio_photos" "playsee_story" "meep_todo" "pccw_post")
 
   TEST_BRANCH_PRIFIX: flutter/test
   RELEASE_BRANCH_PRIFIX: flutter/release
